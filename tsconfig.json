@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"target": "es5",
+		"outDir": "js",
+		"sourceMap": false,
+		"lib": [
+			"dom",
+			"dom.iterable",
+			"es5",
+			"es6",
+			"es2015",
+			"es2015.iterable"
+		]
+	},
+	"compileOnSave": true
+}
+
