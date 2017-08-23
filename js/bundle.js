@@ -1,18 +1,20 @@
 var Command = (function () {
-    function Command(fullCmd) {
+    function Command(cmd) {
         this.body = [];
         this.cmd = 0;
         this.name = "UNK";
-        this.arg1 = 0;
-        for (var i = 0; i < 4; i++) {
-            this.body[i] = (fullCmd >> i) & 1;
+        this.args = [];
+        for (var i = 0; i < 10; i++) {
+            this.body[i] = cmd.length > i ? parseInt(cmd[i]) : 0;
         }
         this.cmd = this.extractNum(0, 2);
-        this.arg1 = this.extractNum(2, 2);
+        this.args = [];
+        for (var i = 0; i < 2; i++) {
+            this.args.push(this.extractNum(2 + i * 2, 2));
+        }
     }
     Command.prototype.extractNum = function (start, len) {
         var parts = this.body.slice(start, start + len);
-        parts = parts.reverse();
         var value = 0;
         for (var i = 0; i < len; i++) {
             var cur = (parts[len - i - 1]) * Math.pow(2, i);
@@ -21,18 +23,19 @@ var Command = (function () {
         return value;
     };
     Command.prototype.format = function () {
-        return "CMD: " + this.cmd.toString(2) + " (" + this.name + ") ARG1: " + this.arg1.toString(2);
+        var line = "";
+        this.args.forEach(function (value) {
+            line += value.toString(2) + ";";
+        });
+        return "CMD: " + this.cmd.toString(2) + " (" + this.name +
+            ") ARGS: [" + line + "]";
     };
     return Command;
 }());
 var ProcessorController = (function () {
     function ProcessorController() {
         var _this = this;
-        this.program = [];
-        this.counter = -1;
-        this.current = null;
-        this.terminated = true;
-        this.r1 = 0;
+        this.regs = [0, 0, 0, 0];
         this.stateNode = document.getElementById("state");
         this.programInput =
             document.getElementById("programInput");
@@ -42,13 +45,15 @@ var ProcessorController = (function () {
         this.nextButton =
             document.getElementById("nextBtn");
         this.nextButton.onclick = function () { return _this.onNext(); };
+        this.resetState();
         this.writeStateView();
     }
     ProcessorController.prototype.resetState = function () {
-        this.current = null;
         this.program = [];
         this.counter = -1;
-        this.r1 = 0;
+        this.current = null;
+        this.regs = [0, 0, 0, 0];
+        this.terminated = true;
     };
     ProcessorController.prototype.readProgram = function () {
         var _this = this;
@@ -57,13 +62,13 @@ var ProcessorController = (function () {
         textParts.forEach(function (item) {
             var intValue = parseInt(item, 2);
             if (!isNaN(intValue)) {
-                _this.program.push(intValue);
+                _this.program.push(item);
             }
         });
     };
     ProcessorController.prototype.onProcess = function () {
-        this.terminated = false;
         this.resetState();
+        this.terminated = false;
         this.readProgram();
         this.writeStateView();
     };
@@ -83,27 +88,27 @@ var ProcessorController = (function () {
         this.updateCurrent();
         switch (this.current.cmd) {
             case 1:
-                this.reset();
+                this.reset(this.current);
                 break;
             case 2:
-                this.inc();
+                this.inc(this.current);
                 break;
             case 3:
-                this.load();
+                this.put(this.current);
                 break;
         }
     };
-    ProcessorController.prototype.reset = function () {
-        this.current.name = "RESET";
-        this.r1 = 0;
+    ProcessorController.prototype.reset = function (cmd) {
+        cmd.name = "RESET";
+        this.regs[cmd.args[0]] = 0;
     };
-    ProcessorController.prototype.inc = function () {
-        this.current.name = "INC";
-        this.r1++;
+    ProcessorController.prototype.inc = function (cmd) {
+        cmd.name = "INC";
+        this.regs[cmd.args[0]]++;
     };
-    ProcessorController.prototype.load = function () {
-        this.current.name = "LOAD";
-        this.r1 = this.current.arg1;
+    ProcessorController.prototype.put = function (cmd) {
+        cmd.name = "PUT";
+        this.regs[cmd.args[0]] = cmd.args[1];
     };
     ProcessorController.prototype.checkTermination = function () {
         if (this.counter + 1 >= this.program.length) {
@@ -125,7 +130,7 @@ var ProcessorController = (function () {
         var _this = this;
         var str = "";
         this.program.forEach(function (value, index) {
-            var s = value.toString(2) + "; ";
+            var s = value + "; ";
             if (index == _this.counter) {
                 s = "<b>" + s + "</b>";
             }
@@ -140,12 +145,15 @@ var ProcessorController = (function () {
         return this.current.format();
     };
     ProcessorController.prototype.writeStateView = function () {
+        var _this = this;
         this.clearStateView();
         this.addToStateView("Program", this.formatProgram());
         this.addToStateView("Current", this.formatCommand());
         this.addToStateView("Counter", this.counter.toString());
         this.addToStateView("Terminated", this.terminated.toString());
-        this.addToStateView("R1", this.r1.toString(2));
+        this.regs.forEach(function (value, index) {
+            return _this.addToStateView("R" + index, value.toString(2));
+        });
     };
     return ProcessorController;
 }());

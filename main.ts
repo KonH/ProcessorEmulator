@@ -2,19 +2,21 @@ class Command {
 	body : number[] = [];
 	cmd : number = 0;
 	name : string = "UNK";
-	arg1 : number = 0;
-	
-	constructor(fullCmd : number) {
-		for (var i = 0; i < 4; i++) {
-		  this.body[i] = (fullCmd >> i) & 1;
+	args : number[] = [];
+
+	constructor(cmd : string) {
+		for (var i = 0; i < 10; i++) {
+		  this.body[i] = cmd.length > i ? parseInt(cmd[i]) : 0;
 		}
-		this.cmd = this.extractNum(0, 2); 
-		this.arg1 = this.extractNum(2, 2);
+		this.cmd = this.extractNum(0, 2);
+		this.args = [];
+		for (var i = 0; i < 2; i++) {
+			this.args.push(this.extractNum(2 + i * 2, 2));
+		}
 	}
 
 	extractNum(start : number, len : number) : number { 
 		let parts = this.body.slice(start, start + len);
-		parts = parts.reverse();
 		let value = 0;
 		for (var i = 0; i < len; i++) {
 			let cur = (parts[len - i - 1]) * Math.pow(2, i);
@@ -24,7 +26,12 @@ class Command {
 	}
 
 	format() : string {
-		return "CMD: " + this.cmd.toString(2) + " (" + this.name + ") ARG1: " + this.arg1.toString(2);
+		let line = "";
+		this.args.forEach((value) => {
+			line += value.toString(2) + ";";
+		});
+		return "CMD: " + this.cmd.toString(2) + " (" + this.name + 
+		") ARGS: [" + line + "]";
 	}
 }
 
@@ -34,12 +41,12 @@ class ProcessorController {
 	processButton : HTMLButtonElement;
 	nextButton : HTMLButtonElement;
 
-	program : number[] = [];
-	counter : number = -1;
-	current : Command = null;
-	terminated : boolean = true;
+	program : string[];
+	counter : number;
+	current : Command;
+	terminated : boolean;
 
-	r1 : number = 0;
+	regs : number[] = [0, 0, 0, 0];
 
 	constructor() {
 		this.stateNode = document.getElementById("state");
@@ -51,14 +58,16 @@ class ProcessorController {
 		this.nextButton = 
 			<HTMLButtonElement>document.getElementById("nextBtn");
 		this.nextButton.onclick = () => this.onNext();
+		this.resetState();
 		this.writeStateView();	
 	}
 
 	resetState() {
-		this.current = null;
 		this.program = [];
 		this.counter = -1;
-		this.r1 = 0;
+		this.current = null;
+		this.regs = [0, 0, 0, 0];
+		this.terminated = true;
 	}
 
 	readProgram() {
@@ -67,14 +76,14 @@ class ProcessorController {
 		textParts.forEach((item) => {
 			let intValue = parseInt(item, 2);
 			if (!isNaN(intValue)) {
-				this.program.push(intValue);
+				this.program.push(item);
 			}
 		});
 	}
 
 	onProcess() {
-		this.terminated = false;
 		this.resetState();
+		this.terminated = false;
 		this.readProgram();
 		this.writeStateView();
 	}
@@ -98,25 +107,25 @@ class ProcessorController {
 	processCurrent() {
 		this.updateCurrent();
 		switch (this.current.cmd) {
-			case 0b01: this.reset(); break;
-			case 0b10: this.inc(); break;
-			case 0b11: this.load(); break;
+			case 0b01: this.reset(this.current); break;
+			case 0b10: this.inc(this.current); break;
+			case 0b11: this.put(this.current); break;
 		}
 	}
 
-	reset() {
-		this.current.name = "RESET";
-		this.r1 = 0;
+	reset(cmd : Command) {
+		cmd.name = "RESET";
+		this.regs[cmd.args[0]] = 0;
 	}
 
-	inc() {
-		this.current.name = "INC";
-		this.r1++;
+	inc(cmd : Command) {
+		cmd.name = "INC";
+		this.regs[cmd.args[0]]++;
 	}
 
-	load() {
-		this.current.name = "LOAD";
-		this.r1 = this.current.arg1;
+	put(cmd : Command) {
+		cmd.name = "PUT";
+		this.regs[cmd.args[0]] = cmd.args[1];
 	}
 
 	checkTermination() {
@@ -141,7 +150,7 @@ class ProcessorController {
 	formatProgram() : string {
 		let str = "";
 		this.program.forEach((value, index) => {
-			let s = value.toString(2) + "; ";
+			let s = value + "; ";
 			if (index == this.counter) {
 				s = "<b>" + s + "</b>";
 			}
@@ -163,7 +172,8 @@ class ProcessorController {
 		this.addToStateView("Current", this.formatCommand());
 		this.addToStateView("Counter", this.counter.toString());
 		this.addToStateView("Terminated", this.terminated.toString());
-		this.addToStateView("R1", this.r1.toString(2));
+		this.regs.forEach((value, index) =>
+			this.addToStateView("R" + index, value.toString(2)));
 	}
 }
 
