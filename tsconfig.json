@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"target": "es5",
-		"outFile": "js/bundle.js",
+		"outDir": "js",
 		"sourceMap": false,
 		"lib": [
 			"dom",
