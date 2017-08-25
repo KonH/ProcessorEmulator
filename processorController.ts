@@ -1,10 +1,13 @@
 class ProcessorController {
 	model : ProcessorModel;
-	programInput : HTMLInputElement;
+	programInput : HTMLTextAreaElement;
 	processButton : HTMLButtonElement;
 	nextButton : HTMLButtonElement;
 
-	constructor(model : ProcessorModel, program : HTMLInputElement, process : HTMLButtonElement, next : HTMLButtonElement) {
+	charCodeZero = "0".charCodeAt(0);
+	charCodeNine = "9".charCodeAt(0);
+
+	constructor(model : ProcessorModel, program : HTMLTextAreaElement, process : HTMLButtonElement, next : HTMLButtonElement) {
 		this.model = model;
 		this.programInput = program;
 		this.processButton = process;
@@ -17,10 +20,20 @@ class ProcessorController {
 	resetModel() {
 		this.model.reset();
 	}
+	
+	isDigitCode(n : number) : boolean {
+	   return (n >= this.charCodeZero && n <= this.charCodeNine);
+	}
 
 	readProgram() {
 		let text = this.programInput.value;
-		let cleanText = text.replace(/ /g,'');
+		let cleanText = "";
+		for (var i = 0; i < text.length; i++) {
+			let code = text.charCodeAt(i);
+			if (this.isDigitCode(code)) {
+				cleanText += text.charAt(i);
+			}
+		}
 		this.model.setProgram(cleanText);
 	}
 
@@ -40,13 +53,15 @@ class ProcessorController {
 	processCommand() {
 		let model = this.model;
 		model.updateCommand();
-		switch (model.command.header) {
-			case 0b001: this.reset(model.command); break;
-			case 0b010: this.inc(model.command); break;
-			case 0b011: this.put(model.command); break;
-			case 0b100: this.resetAcc(model.command); break;
-			case 0b101: this.incAcc(model.command); break;
-			case 0b110: this.putAcc(model.command); break;
+		let command = model.command;
+		switch (command.header) {
+			case 0b001: this.reset(command); break;
+			case 0b010: this.inc(command); break;
+			case 0b011: this.put(command); break;
+			case 0b100: this.resetAcc(command); break;
+			case 0b101: this.incAcc(command); break;
+			case 0b110: this.putAcc(command); break;
+			case 0b111: this.jump(command); break;
 		}
 	}
 	
@@ -97,6 +112,11 @@ class ProcessorController {
 	putAcc(cmd : Command) {
 		this.prepare(cmd, "PUT", 1);
 		this.model.setRegister(0, cmd.args[0]);
+	}
+
+	jump(cmd : Command) {
+		this.prepare(cmd, "JMP", 1);
+		this.model.setCounter(cmd.args[0]);
 	}
 
 	checkTermination() {

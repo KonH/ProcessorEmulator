@@ -1,6 +1,8 @@
 var ProcessorController = (function () {
     function ProcessorController(model, program, process, next) {
         var _this = this;
+        this.charCodeZero = "0".charCodeAt(0);
+        this.charCodeNine = "9".charCodeAt(0);
         this.model = model;
         this.programInput = program;
         this.processButton = process;
@@ -12,9 +14,18 @@ var ProcessorController = (function () {
     ProcessorController.prototype.resetModel = function () {
         this.model.reset();
     };
+    ProcessorController.prototype.isDigitCode = function (n) {
+        return (n >= this.charCodeZero && n <= this.charCodeNine);
+    };
     ProcessorController.prototype.readProgram = function () {
         var text = this.programInput.value;
-        var cleanText = text.replace(/ /g, '');
+        var cleanText = "";
+        for (var i = 0; i < text.length; i++) {
+            var code = text.charCodeAt(i);
+            if (this.isDigitCode(code)) {
+                cleanText += text.charAt(i);
+            }
+        }
         this.model.setProgram(cleanText);
     };
     ProcessorController.prototype.onProcess = function () {
@@ -31,24 +42,28 @@ var ProcessorController = (function () {
     ProcessorController.prototype.processCommand = function () {
         var model = this.model;
         model.updateCommand();
-        switch (model.command.header) {
+        var command = model.command;
+        switch (command.header) {
             case 1:
-                this.reset(model.command);
+                this.reset(command);
                 break;
             case 2:
-                this.inc(model.command);
+                this.inc(command);
                 break;
             case 3:
-                this.put(model.command);
+                this.put(command);
                 break;
             case 4:
-                this.resetAcc(model.command);
+                this.resetAcc(command);
                 break;
             case 5:
-                this.incAcc(model.command);
+                this.incAcc(command);
                 break;
             case 6:
-                this.putAcc(model.command);
+                this.putAcc(command);
+                break;
+            case 7:
+                this.jump(command);
                 break;
         }
     };
@@ -91,6 +106,10 @@ var ProcessorController = (function () {
     ProcessorController.prototype.putAcc = function (cmd) {
         this.prepare(cmd, "PUT", 1);
         this.model.setRegister(0, cmd.args[0]);
+    };
+    ProcessorController.prototype.jump = function (cmd) {
+        this.prepare(cmd, "JMP", 1);
+        this.model.setCounter(cmd.args[0]);
     };
     ProcessorController.prototype.checkTermination = function () {
         var model = this.model;

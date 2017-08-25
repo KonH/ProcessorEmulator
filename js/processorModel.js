@@ -38,5 +38,9 @@ var ProcessorModel = (function () {
         this.registers[index] = value;
         this.onModelChanged();
     };
+    ProcessorModel.prototype.setCounter = function (value) {
+        this.counter = value;
+        this.onModelChanged();
+    };
     return ProcessorModel;
 }());

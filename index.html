@@ -5,7 +5,7 @@
 	<body>
 		<h2>Control:</h2>
 		<p>Bus:</p>
-		<p><input id="programInput"></input></p>
+		<p><textarea id="programInput"></textarea></p>
 		<p><button id="processBtn">Process</button><button id="nextBtn">Next</button></p>
 		<h2>State:</h2>
 		<ul id="state"></ul>
@@ -22,7 +22,8 @@
 			<li><b>011xxyy PUT</b>: r[xx] = yy;</li>
 			<li><b>100 RSTA</b>: r[0] = 0;</li>
 			<li><b>101 INCA</b>: r[0]++;</li>
-			<li><b>111xx PUTA</b>: r[0] = xx;</li>
+			<li><b>110xx PUTA</b>: r[0] = xx;</li>
+			<li><b>111xx JMP</b>: go to xx;</li>
 		</ul>
 		<script type="text/javascript" src="js/command.js"></script>
 		<script type="text/javascript" src="js/processorModel.js"></script>

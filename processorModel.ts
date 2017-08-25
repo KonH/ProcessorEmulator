@@ -28,7 +28,7 @@ class ProcessorModel {
 	}
 
 	readBusData(len : number) : string {
-		let data = this.program.slice(this.counter, this.counter + len); 
+		let data = this.program.slice(this.counter, this.counter + len);
 		this.counter += len;
 		return data;
 	}
@@ -46,6 +46,11 @@ class ProcessorModel {
 
 	setRegister(index : number, value : number) {
 		this.registers[index] = value;
+		this.onModelChanged();
+	}
+
+	setCounter(value : number) {
+		this.counter = value;
 		this.onModelChanged();
 	}
 }
