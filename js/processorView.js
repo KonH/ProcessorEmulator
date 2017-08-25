@@ -21,16 +21,8 @@ var ProcessorView = (function () {
         this.node.appendChild(childNode);
     };
     ProcessorView.prototype.formatProgram = function () {
-        var str = "";
-        var model = this.model;
-        model.program.forEach(function (value, index) {
-            var s = value + "; ";
-            if (index == model.counter) {
-                s = "<b>" + s + "</b>";
-            }
-            str += s;
-        });
-        return str.length == 0 ? "none" : str;
+        var program = this.model.program;
+        return program.length == 0 ? "none" : program;
     };
     ProcessorView.prototype.formatCommand = function () {
         var cmd = this.model.command;

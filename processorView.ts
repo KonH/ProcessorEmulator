@@ -27,16 +27,8 @@ class ProcessorView {
 	}
 
 	formatProgram() : string {
-		let str = "";
-		let model = this.model;
-		model.program.forEach((value, index) => {
-			let s = value + "; ";
-			if (index == model.counter) {
-				s = "<b>" + s + "</b>";
-			}
-			str += s;
-		});
-		return str.length == 0 ? "none" : str;
+		let program = this.model.program;
+		return program.length == 0 ? "none" : program;
 	}
 
 	formatCommand() : string {

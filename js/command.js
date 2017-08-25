@@ -1,20 +1,27 @@
 var Command = (function () {
-    function Command(cmd) {
+    function Command(header) {
         this.body = [];
-        this.cmd = 0;
+        this.header = 0;
         this.name = "UNK";
         this.args = [];
-        for (var i = 0; i < 10; i++) {
-            this.body[i] = cmd.length > i ? parseInt(cmd[i]) : 0;
-        }
-        this.cmd = this.extractNum(0, 2);
-        this.args = [];
-        for (var i = 0; i < 2; i++) {
-            this.args.push(this.extractNum(2 + i * 2, 2));
-        }
+        var headerData = this.toBitArray(header);
+        this.header = this.extractNum(headerData, 0, Command.headerSize);
     }
-    Command.prototype.extractNum = function (start, len) {
-        var parts = this.body.slice(start, start + len);
+    Command.prototype.toBitArray = function (str) {
+        var array = [];
+        for (var i = 0; i < str.length; i++) {
+            array.push(parseInt(str[i]));
+        }
+        return array;
+    };
+    Command.prototype.loadArgs = function (data, count) {
+        var bodyData = this.toBitArray(data);
+        for (var i = 0; i < count; i++) {
+            this.args.push(this.extractNum(bodyData, i * Command.argSize, Command.argSize));
+        }
+    };
+    Command.prototype.extractNum = function (data, start, len) {
+        var parts = data.slice(start, start + len);
         var value = 0;
         for (var i = 0; i < len; i++) {
             var cur = (parts[len - i - 1]) * Math.pow(2, i);
@@ -27,8 +34,10 @@ var Command = (function () {
         this.args.forEach(function (value) {
             line += value.toString(2) + ";";
         });
-        return "CMD: " + this.cmd.toString(2) + " (" + this.name +
+        return "CMD: " + this.header.toString(2) + " (" + this.name +
             ") ARGS: [" + line + "]";
     };
+    Command.headerSize = 2;
+    Command.argSize = 2;
     return Command;
 }());

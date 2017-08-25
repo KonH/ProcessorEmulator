@@ -13,15 +13,9 @@ var ProcessorController = (function () {
         this.model.reset();
     };
     ProcessorController.prototype.readProgram = function () {
-        var _this = this;
         var text = this.programInput.value;
-        var textParts = text.split(" ");
-        textParts.forEach(function (item) {
-            var intValue = parseInt(item, 2);
-            if (!isNaN(intValue)) {
-                _this.model.addToProgram(item);
-            }
-        });
+        var cleanText = text.replace(/ /g, '');
+        this.model.setProgram(cleanText);
     };
     ProcessorController.prototype.onProcess = function () {
         this.resetModel();
@@ -37,7 +31,7 @@ var ProcessorController = (function () {
     ProcessorController.prototype.processCommand = function () {
         var model = this.model;
         model.updateCommand();
-        switch (model.command.cmd) {
+        switch (model.command.header) {
             case 1:
                 this.reset(model.command);
                 break;
@@ -49,18 +43,25 @@ var ProcessorController = (function () {
                 break;
         }
     };
+    ProcessorController.prototype.loadCommandData = function (command, count) {
+        var data = this.model.readBusData(count * Command.argSize);
+        command.loadArgs(data, count);
+    };
+    ProcessorController.prototype.prepare = function (command, name, args) {
+        command.name = name;
+        this.loadCommandData(command, args);
+    };
     ProcessorController.prototype.reset = function (cmd) {
-        cmd.name = "RESET";
+        this.prepare(cmd, "RESET", 1);
         this.model.setRegister(cmd.args[0], 0);
     };
     ProcessorController.prototype.inc = function (cmd) {
-        cmd.name = "INC";
-        var model = this.model;
+        this.prepare(cmd, "INC", 1);
         var val = model.registers[cmd.args[0]];
         model.setRegister(cmd.args[0], ++val);
     };
     ProcessorController.prototype.put = function (cmd) {
-        cmd.name = "PUT";
+        this.prepare(cmd, "PUT", 2);
         this.model.setRegister(cmd.args[0], cmd.args[1]);
     };
     ProcessorController.prototype.checkTermination = function () {

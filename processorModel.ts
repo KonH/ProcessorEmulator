@@ -1,5 +1,5 @@
 class ProcessorModel {
-	program : string[];
+	program : string;
 	counter : number;
 	command : Command;
 	terminated : boolean;
@@ -14,22 +14,28 @@ class ProcessorModel {
 	}
 
 	reset() {
-		this.program = [];
-		this.counter = -1;
+		this.program = "";
+		this.counter = 0;
 		this.command = null;
 		this.registers = [0, 0, 0, 0];
 		this.terminated = true;
 		this.onModelChanged();
 	}
 
-	addToProgram(part : string) {
-		this.program.push(part);
+	setProgram(program : string) {
+		this.program = program;
 		this.onModelChanged();
 	}
 
+	readBusData(len : number) : string {
+		let data = this.program.slice(this.counter, this.counter + len); 
+		this.counter += len;
+		return data;
+	}
+
 	updateCommand() {
-		this.counter++;
-		this.command = new Command(this.program[this.counter]);
+		let header = this.readBusData(Command.headerSize);
+		this.command = new Command(header);
 		this.onModelChanged();
 	}
 
