@@ -1,5 +1,5 @@
 class Command {
-	static headerSize = 2;
+	static headerSize = 3;
 	static argSize = 2;
 
 	body : number[] = [];

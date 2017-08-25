@@ -3,7 +3,7 @@ class ProcessorModel {
 	counter : number;
 	command : Command;
 	terminated : boolean;
-	registers : number[] = [0, 0, 0, 0];
+	registers : number[] = [];
 
 	changedCallback : Function = null;
 
@@ -17,7 +17,7 @@ class ProcessorModel {
 		this.program = "";
 		this.counter = 0;
 		this.command = null;
-		this.registers = [0, 0, 0, 0];
+		this.registers = [0, 0, 0, 0, 0];
 		this.terminated = true;
 		this.onModelChanged();
 	}

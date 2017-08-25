@@ -1,6 +1,6 @@
 var ProcessorModel = (function () {
     function ProcessorModel() {
-        this.registers = [0, 0, 0, 0];
+        this.registers = [];
         this.changedCallback = null;
     }
     ProcessorModel.prototype.onModelChanged = function () {
@@ -12,7 +12,7 @@ var ProcessorModel = (function () {
         this.program = "";
         this.counter = 0;
         this.command = null;
-        this.registers = [0, 0, 0, 0];
+        this.registers = [0, 0, 0, 0, 0];
         this.terminated = true;
         this.onModelChanged();
     };

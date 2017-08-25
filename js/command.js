@@ -37,7 +37,7 @@ var Command = (function () {
         return "CMD: " + this.header.toString(2) + " (" + this.name +
             ") ARGS: [" + line + "]";
     };
-    Command.headerSize = 2;
+    Command.headerSize = 3;
     Command.argSize = 2;
     return Command;
 }());
