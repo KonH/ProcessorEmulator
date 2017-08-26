@@ -6,7 +6,7 @@ var HelpView = (function () {
     }
     HelpView.prototype.write = function () {
         var _this = this;
-        this.helper.handlers.forEach(function (item) { return _this.writeItem(item); });
+        this.helper.handlersByName.forEach(function (item) { return _this.writeItem(item); });
     };
     HelpView.prototype.getTdText = function (text) {
         return "<td>" + text + "</td>";

@@ -1,5 +1,6 @@
 class CommandHelper {
-	handlers : Map<number, HandlerBase> = new Map<number, HandlerBase>();
+	handlersByHeader : Map<number, HandlerBase> = new Map<number, HandlerBase>();
+	handlersByName : Map<string, HandlerBase> = new Map<string, HandlerBase>();
 	private model : ProcessorModel;
 
 	constructor(model : ProcessorModel) {
@@ -22,8 +23,8 @@ class CommandHelper {
 	}
 
 	private addHandler(handler : HandlerBase) {
-		let key = handler.header;
-		this.handlers.set(key, handler);
+		this.handlersByHeader.set(handler.header, handler);
+		this.handlersByName.set(handler.name.toLowerCase(), handler);
 	}
 
 	private loadCommandDataWide(command : Command, count : number) {
@@ -49,16 +50,24 @@ class CommandHelper {
 		}
 	}
 
-	private findHandler(header : number) {
-		if (this.handlers.has(header)) {
-			return this.handlers.get(header);
+	private findHandler(key, collection) {
+		if (collection.has(key)) {
+			return collection.get(key);
 		}
 		return null;
 	}
 
+	private findHandlerByHeader(header : number) : HandlerBase {
+		return this.findHandler(header, this.handlersByHeader);
+	}
+
+	findHandlerByName(name : string) : HandlerBase {
+		return this.findHandler(name.toLowerCase(), this.handlersByName);
+	}
+
 	execCommand(command : Command) {
 		let header = command.header;
-		let handler = this.findHandler(header);
+		let handler = this.findHandlerByHeader(header);
 		if (handler != null) {
 			this.prepare(command, handler.name, handler.shortArgs, handler.wideArgs);
 			handler.exec(command, model);

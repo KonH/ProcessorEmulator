@@ -5,9 +5,13 @@
 	</head>
 	<body>
 		<div class="container">
-			<h2>Control:</h2>
-			<p>Bus:</p>
-			<p><textarea id="programInput" rows="8"></textarea></p>
+			<h2>Assembly Code:</h2>
+			<p><textarea id="assemblyInput" rows="24"></textarea></p>
+			<p><button id="convertBtn">Convert</button></p>
+		</div>
+		<div class="container">
+			<h2>Machine Code:</h2>
+			<p><textarea id="machineInput" rows="24"></textarea></p>
 			<p><button id="processBtn">Process</button><button id="nextBtn">Next</button></p>
 		</div>
 		<div class="container">
@@ -30,6 +34,7 @@
 		<script type="text/javascript" src="js/handlerBase.js"></script>
 		<script type="text/javascript" src="js/handlers.js"></script>
 		<script type="text/javascript" src="js/commandHelper.js"></script>
+		<script type="text/javascript" src="js/assemblyController.js"></script>
 		<script type="text/javascript" src="js/helpView.js"></script>
 		<script type="text/javascript" src="js/processorView.js"></script>
 		<script type="text/javascript" src="js/processorController.js"></script>

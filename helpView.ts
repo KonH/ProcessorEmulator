@@ -11,7 +11,7 @@ class HelpView {
 	}
 
 	private write() {
-		this.helper.handlers.forEach(item => this.writeItem(item));
+		this.helper.handlersByName.forEach(item => this.writeItem(item));
 	}
 
 	private getTdText(text : string) : string {

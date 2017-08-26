@@ -8,7 +8,11 @@ var helper = new CommandHelper(model);
 var table = <HTMLTableElement>document.getElementById("commandHelp");
 var helpView = new HelpView(table, helper);
 
-var program = <HTMLTextAreaElement>document.getElementById("programInput");
+var assemblyCode = <HTMLTextAreaElement>document.getElementById("assemblyInput");
+var machineCode = <HTMLTextAreaElement>document.getElementById("machineInput");
+var convert = <HTMLButtonElement>document.getElementById("convertBtn");
+var assemblyController = new AssemblyController(assemblyCode, machineCode, convert, helper);
+
 var process = <HTMLButtonElement>document.getElementById("processBtn");
 var next = <HTMLButtonElement>document.getElementById("nextBtn");
-var controller = new ProcessorController(model, helper, program, process, next);
+var procController = new ProcessorController(model, helper, machineCode, process, next);

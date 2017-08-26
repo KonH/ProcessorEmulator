@@ -1,6 +1,7 @@
 var CommandHelper = (function () {
     function CommandHelper(model) {
-        this.handlers = new Map();
+        this.handlersByHeader = new Map();
+        this.handlersByName = new Map();
         this.model = model;
         this.addHandlers([
             new ResetHandler(),
@@ -19,8 +20,8 @@ var CommandHelper = (function () {
         handlers.forEach(function (handler) { return _this.addHandler(handler); });
     };
     CommandHelper.prototype.addHandler = function (handler) {
-        var key = handler.header;
-        this.handlers.set(key, handler);
+        this.handlersByHeader.set(handler.header, handler);
+        this.handlersByName.set(handler.name.toLowerCase(), handler);
     };
     CommandHelper.prototype.loadCommandDataWide = function (command, count) {
         var data = this.model.readBusData(count * Command.wideArgSize);
@@ -40,15 +41,21 @@ var CommandHelper = (function () {
             this.loadCommandDataWide(command, wideArgs);
         }
     };
-    CommandHelper.prototype.findHandler = function (header) {
-        if (this.handlers.has(header)) {
-            return this.handlers.get(header);
+    CommandHelper.prototype.findHandler = function (key, collection) {
+        if (collection.has(key)) {
+            return collection.get(key);
         }
         return null;
     };
+    CommandHelper.prototype.findHandlerByHeader = function (header) {
+        return this.findHandler(header, this.handlersByHeader);
+    };
+    CommandHelper.prototype.findHandlerByName = function (name) {
+        return this.findHandler(name.toLowerCase(), this.handlersByName);
+    };
     CommandHelper.prototype.execCommand = function (command) {
         var header = command.header;
-        var handler = this.findHandler(header);
+        var handler = this.findHandlerByHeader(header);
         if (handler != null) {
             this.prepare(command, handler.name, handler.shortArgs, handler.wideArgs);
             handler.exec(command, model);
