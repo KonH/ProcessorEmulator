@@ -1,14 +1,8 @@
 class ProcessorModel {
-	static regCount : number = 8;
-	static serviceRegCount : number = 3;
-	static regSize : number = 8;
-	static terminatedBit = 0;
-	static memorySize = 256;
-
 	program : BitSet;
 	command : Command;
-	registers : BitSet[];
-	memory : BitSet;
+	private registers : BitSet[];
+	private memory : BitSet;
 
 	changedCallback : Function = null;
 
@@ -19,14 +13,14 @@ class ProcessorModel {
 	}
 
 	constructor() {
-		this.registers = Array(ProcessorModel.regCount);
+		this.registers = Array(Setup.regCount);
 	}
 
 	reset() {
 		this.program = null;
 		this.command = null;
-		this.registers.fill(new BitSet(ProcessorModel.regSize));
-		this.memory = new BitSet(ProcessorModel.memorySize);
+		this.registers.fill(new BitSet(Setup.regSize));
+		this.memory = new BitSet(Setup.memorySize);
 		this.onModelChanged();
 	}
 
@@ -42,8 +36,8 @@ class ProcessorModel {
 		return 2;
 	}
 
-	getCommonRegIdx(index : BitSet) {
-		return index.toNum() + ProcessorModel.serviceRegCount;
+	private getCommonRegIdx(index : BitSet) {
+		return index.toNum() + Setup.serviceRegCount;
 	}
 
 	getCounterRegister() : BitSet {
@@ -60,11 +54,29 @@ class ProcessorModel {
 	}
 
 	getTerminatedFlag() : boolean {
-		return this.getSystemRegister().getBit(ProcessorModel.terminatedBit);
+		return this.getSystemRegister().getBit(Setup.terminatedBit);
+	}
+
+	getCommonRegister(index : BitSet) : BitSet {
+		let commonRegIdx = this.getCommonRegIdx(index);
+		return this.registers[commonRegIdx];
+	}
+
+	getAccumRegister() : BitSet {
+		let accRegIdx = this.getAccumRegIdx();
+		return this.registers[accRegIdx];
+	}
+
+	getRegisters() : BitSet[] {
+		return this.registers;
 	}
 
 	getMemory(address : BitSet, len : number) : BitSet {
 		return this.memory.subset(address.toNum(), len);
+	}
+
+	getAllMemory() : BitSet {
+		return this.memory;
 	}
 
 	readBusData(len : number) : BitSet {
@@ -78,7 +90,7 @@ class ProcessorModel {
 	}
 
 	updateCommand() {
-		let header = this.readBusData(Command.headerSize);
+		let header = this.readBusData(Setup.headerSize);
 		this.command = new Command(header);
 		this.onModelChanged();
 	}
@@ -86,11 +98,21 @@ class ProcessorModel {
 	setTerminatedFlag(value : boolean) {
 		let idx = this.getSystemRegIdx();
 		let regs = this.registers;
-		regs[idx] = regs[idx].setOneBit(ProcessorModel.terminatedBit, value);
+		regs[idx] = regs[idx].setOneBit(Setup.terminatedBit, value);
 		this.onModelChanged();
 	}
 
-	setRegister(index : number, value : BitSet) {
+	setCommonRegister(index : BitSet, value : BitSet) {
+		let commonRegIdx = this.getCommonRegIdx(index);
+		this.setRegister(commonRegIdx, value);
+	}
+
+	setAccumRegister(value : BitSet) {
+		let accRegIdx = this.getAccumRegIdx();
+		this.setRegister(accRegIdx, value);
+	}
+
+	private setRegister(index : number, value : BitSet) {
 		Logger.write("processorModel", "setRegister: " + index + ": " + value.toString())
 		this.registers[index] = value;
 		this.onModelChanged();

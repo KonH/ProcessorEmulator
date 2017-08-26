@@ -19,8 +19,7 @@ var ResetHandler = (function (_super) {
         return _this;
     }
     ResetHandler.prototype.exec = function (cmd, model) {
-        var idx = model.getCommonRegIdx(cmd.args[0]);
-        model.setRegister(idx, BitSet.empty(ProcessorModel.regSize));
+        model.setCommonRegister(cmd.args[0], BitSet.empty(Setup.regSize));
     };
     return ResetHandler;
 }(HandlerBase));
@@ -35,10 +34,9 @@ var IncHandler = (function (_super) {
         return _this;
     }
     IncHandler.prototype.exec = function (cmd, model) {
-        var index = model.getCommonRegIdx(cmd.args[0]);
-        var val = model.registers[index];
+        var val = model.getCommonRegister(cmd.args[0]);
         var newVal = val.setValue(val.toNum() + 1);
-        model.setRegister(index, newVal);
+        model.setCommonRegister(cmd.args[0], newVal);
     };
     return IncHandler;
 }(HandlerBase));
@@ -53,23 +51,22 @@ var MoveHandler = (function (_super) {
         return _this;
     }
     MoveHandler.prototype.exec = function (cmd, model) {
-        var fromIdx = model.getCommonRegIdx(cmd.args[0]);
-        var toIdx = model.getCommonRegIdx(cmd.args[1]);
-        this.commonMove(model, fromIdx, toIdx);
+        var value = model.getCommonRegister(cmd.args[0]);
+        model.setCommonRegister(cmd.args[1], value);
     };
     return MoveHandler;
-}(MoveHandlerBase));
+}(HandlerBase));
 var ResetAccHandler = (function (_super) {
     __extends(ResetAccHandler, _super);
     function ResetAccHandler() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.header = 4;
         _this.name = "RSTA";
-        _this.description = "r[0] = 0";
+        _this.description = "a = 0";
         return _this;
     }
     ResetAccHandler.prototype.exec = function (cmd, model) {
-        model.setRegister(HandlerBase.accRegIdx, BitSet.empty(ProcessorModel.regSize));
+        model.setAccumRegister(BitSet.empty(Setup.regSize));
     };
     return ResetAccHandler;
 }(HandlerBase));
@@ -79,14 +76,13 @@ var IncAccHandler = (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.header = 5;
         _this.name = "INCA";
-        _this.description = "r[0]++";
+        _this.description = "a++";
         return _this;
     }
     IncAccHandler.prototype.exec = function (cmd, model) {
-        var idx = HandlerBase.accRegIdx;
-        var val = model.registers[idx];
+        var val = model.getAccumRegister();
         var newVal = val.setValue(val.toNum() + 1);
-        model.setRegister(idx, newVal);
+        model.setAccumRegister(newVal);
     };
     return IncAccHandler;
 }(HandlerBase));
@@ -97,15 +93,15 @@ var MoveAccHandler = (function (_super) {
         _this.header = 6;
         _this.name = "MOVA";
         _this.shortArgs = 1;
-        _this.description = "r[0] = r[x]";
+        _this.description = "a = r[x]";
         return _this;
     }
     MoveAccHandler.prototype.exec = function (cmd, model) {
-        var fromIdx = model.getCommonRegIdx(cmd.args[0]);
-        this.commonMove(model, fromIdx, HandlerBase.accRegIdx);
+        var value = model.getCommonRegister(cmd.args[0]);
+        model.setAccumRegister(value);
     };
     return MoveAccHandler;
-}(MoveHandlerBase));
+}(HandlerBase));
 var JumpHandler = (function (_super) {
     __extends(JumpHandler, _super);
     function JumpHandler() {
@@ -133,8 +129,7 @@ var JumpZeroHandler = (function (_super) {
         return _this;
     }
     JumpZeroHandler.prototype.exec = function (cmd, model) {
-        var idx = model.getCommonRegIdx(cmd.args[0]);
-        var condition = model.registers[idx].toNum() == 0;
+        var condition = model.getCommonRegister(cmd.args[0]).toNum() == 0;
         if (condition) {
             model.setCounter(cmd.args[1]);
         }
@@ -153,10 +148,7 @@ var JumpEqualHandler = (function (_super) {
         return _this;
     }
     JumpEqualHandler.prototype.exec = function (cmd, model) {
-        var leftIdx = model.getCommonRegIdx(cmd.args[0]);
-        var rightIdx = model.getCommonRegIdx(cmd.args[1]);
-        var registers = model.registers;
-        var condition = registers[leftIdx] == registers[rightIdx];
+        var condition = model.getCommonRegister(cmd.args[0]).toNum() == model.getCommonRegister(cmd.args[1]).toNum();
         if (condition) {
             model.setCounter(cmd.args[2]);
         }
@@ -176,10 +168,9 @@ var LoadHandler = (function (_super) {
     }
     LoadHandler.prototype.exec = function (cmd, model) {
         var addr = cmd.args[1];
-        var len = ProcessorModel.regSize;
+        var len = Setup.regSize;
         var result = model.getMemory(addr, len);
-        var regIdx = model.getCommonRegIdx(cmd.args[0]);
-        model.setRegister(regIdx, result);
+        model.setCommonRegister(cmd.args[0], result);
     };
     return LoadHandler;
 }(HandlerBase));
@@ -196,8 +187,7 @@ var SaveHandler = (function (_super) {
     }
     SaveHandler.prototype.exec = function (cmd, model) {
         var addr = cmd.args[1];
-        var regIdx = model.getCommonRegIdx(cmd.args[0]);
-        var content = model.registers[regIdx];
+        var content = model.getCommonRegister(cmd.args[0]);
         model.setMemory(addr, content);
     };
     return SaveHandler;
@@ -214,10 +204,9 @@ var LoadByRegHandler = (function (_super) {
     }
     LoadByRegHandler.prototype.exec = function (cmd, model) {
         var addr = cmd.args[1];
-        var len = ProcessorModel.regSize;
+        var len = Setup.regSize;
         var result = model.getMemory(addr, len);
-        var regIdx = model.getCommonRegIdx(cmd.args[0]);
-        model.setRegister(regIdx, result);
+        model.setCommonRegister(cmd.args[0], result);
     };
     return LoadByRegHandler;
 }(HandlerBase));
@@ -232,10 +221,8 @@ var SaveByRegHandler = (function (_super) {
         return _this;
     }
     SaveByRegHandler.prototype.exec = function (cmd, model) {
-        var addrRegIdx = model.getCommonRegIdx(cmd.args[1]);
-        var addr = model.registers[addrRegIdx];
-        var contentRegIdx = model.getCommonRegIdx(cmd.args[0]);
-        var content = model.registers[contentRegIdx];
+        var addr = model.getCommonRegister(cmd.args[1]);
+        var content = model.getCommonRegister(cmd.args[0]);
         model.setMemory(addr, content);
     };
     return SaveByRegHandler;
@@ -251,12 +238,94 @@ var AddHandler = (function (_super) {
         return _this;
     }
     AddHandler.prototype.exec = function (cmd, model) {
-        var sendIdx = model.getCommonRegIdx(cmd.args[0]);
-        var recIdx = model.getCommonRegIdx(cmd.args[1]);
-        var sendValue = model.registers[sendIdx];
-        var recValue = model.registers[recIdx];
-        var newVal = BitSet.fromNum(sendValue.toNum() + recValue.toNum(), ProcessorModel.regSize);
-        model.setRegister(recIdx, newVal);
+        var sendValue = model.getCommonRegister(cmd.args[0]);
+        var recValue = model.getCommonRegister(cmd.args[1]);
+        var newVal = BitSet.fromNum(sendValue.toNum() + recValue.toNum(), Setup.regSize);
+        model.setCommonRegister(cmd.args[1], newVal);
     };
     return AddHandler;
+}(HandlerBase));
+var PutHandler = (function (_super) {
+    __extends(PutHandler, _super);
+    function PutHandler() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.header = 15;
+        _this.name = "PUT";
+        _this.shortArgs = 1;
+        _this.wideArgs = 1;
+        _this.description = "put y to r[x]";
+        return _this;
+    }
+    PutHandler.prototype.exec = function (cmd, model) {
+        model.setCommonRegister(cmd.args[0], cmd.args[1]);
+    };
+    return PutHandler;
+}(HandlerBase));
+var AddAccHandler = (function (_super) {
+    __extends(AddAccHandler, _super);
+    function AddAccHandler() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.header = 16;
+        _this.name = "ADDA";
+        _this.shortArgs = 1;
+        _this.description = "add r[x] to a";
+        return _this;
+    }
+    AddAccHandler.prototype.exec = function (cmd, model) {
+        var newVal = BitSet.fromNum(model.getAccumRegister().toNum() +
+            model.getCommonRegister(cmd.args[0]).toNum(), Setup.regSize);
+        model.setAccumRegister(newVal);
+    };
+    return AddAccHandler;
+}(HandlerBase));
+var AccMoveHandler = (function (_super) {
+    __extends(AccMoveHandler, _super);
+    function AccMoveHandler() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.header = 17;
+        _this.name = "AMOV";
+        _this.shortArgs = 1;
+        _this.description = "r[x] = a";
+        return _this;
+    }
+    AccMoveHandler.prototype.exec = function (cmd, model) {
+        var value = model.getAccumRegister();
+        model.setCommonRegister(cmd.args[0], value);
+    };
+    return AccMoveHandler;
+}(HandlerBase));
+var LoadByAccRegHandler = (function (_super) {
+    __extends(LoadByAccRegHandler, _super);
+    function LoadByAccRegHandler() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.header = 18;
+        _this.name = "LDRA";
+        _this.shortArgs = 1;
+        _this.description = "load mem from a to r[x]";
+        return _this;
+    }
+    LoadByAccRegHandler.prototype.exec = function (cmd, model) {
+        var addr = model.getAccumRegister();
+        var len = Setup.regSize;
+        var result = model.getMemory(addr, len);
+        model.setCommonRegister(cmd.args[0], result);
+    };
+    return LoadByAccRegHandler;
+}(HandlerBase));
+var SaveByAccRegHandler = (function (_super) {
+    __extends(SaveByAccRegHandler, _super);
+    function SaveByAccRegHandler() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.header = 19;
+        _this.name = "SVRA";
+        _this.shortArgs = 1;
+        _this.description = "save r[x] to mem at a";
+        return _this;
+    }
+    SaveByAccRegHandler.prototype.exec = function (cmd, model) {
+        var addr = model.getAccumRegister();
+        var content = model.getCommonRegister(cmd.args[0]);
+        model.setMemory(addr, content);
+    };
+    return SaveByAccRegHandler;
 }(HandlerBase));

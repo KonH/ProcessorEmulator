@@ -28,15 +28,15 @@ class HelpView {
 
 	private getFullHeaderText(item : HandlerBase) {
 		let header = item.header.toString(2);
-		while (header.length < Command.headerSize) {
+		while (header.length < Setup.headerSize) {
 			header = "0" + header;
 		}
 		let args = "";
-		let shortSize = Command.shortArgSize;
+		let shortSize = Setup.shortArgSize;
 		for (var i = 0; i < item.shortArgs; i++) {
 			args += this.getArgText(i, shortSize);
 		}
-		let wideSize = Command.wideArgSize;
+		let wideSize = Setup.wideArgSize;
 		for (var i = 0; i < item.wideArgs; i++) {
 			args += this.getArgText(item.shortArgs + i, wideSize);
 		}

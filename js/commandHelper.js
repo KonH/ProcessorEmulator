@@ -17,7 +17,12 @@ var CommandHelper = (function () {
             new SaveHandler(),
             new LoadByRegHandler(),
             new SaveByRegHandler(),
-            new AddHandler()
+            new AddHandler(),
+            new PutHandler(),
+            new AddAccHandler(),
+            new AccMoveHandler(),
+            new LoadByAccRegHandler(),
+            new SaveByAccRegHandler()
         ]);
     }
     CommandHelper.prototype.addHandlers = function (handlers) {
@@ -29,11 +34,11 @@ var CommandHelper = (function () {
         this.handlersByName.set(handler.name.toLowerCase(), handler);
     };
     CommandHelper.prototype.loadCommandDataWide = function (command, count) {
-        var data = this.model.readBusData(count * Command.wideArgSize);
+        var data = this.model.readBusData(count * Setup.wideArgSize);
         command.loadWideArgs(data, count);
     };
     CommandHelper.prototype.loadCommandDataShort = function (command, count) {
-        var data = this.model.readBusData(count * Command.shortArgSize);
+        var data = this.model.readBusData(count * Setup.shortArgSize);
         command.loadShortArgs(data, count);
     };
     CommandHelper.prototype.prepare = function (command, name, shortArgs, wideArgs) {

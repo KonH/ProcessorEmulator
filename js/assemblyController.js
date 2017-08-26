@@ -12,17 +12,17 @@ var AssemblyHolder = (function () {
         this.handler = handler;
         var argIndex = 0;
         for (var i = 0; i < this.handler.shortArgs; i++) {
-            this.argHolders.push(new ArgHolder(args[argIndex], Command.shortArgSize));
+            this.argHolders.push(new ArgHolder(args[argIndex], Setup.shortArgSize));
             argIndex++;
         }
         for (var i = 0; i < this.handler.wideArgs; i++) {
-            this.argHolders.push(new ArgHolder(args[argIndex], Command.wideArgSize));
+            this.argHolders.push(new ArgHolder(args[argIndex], Setup.wideArgSize));
             argIndex++;
         }
         this.fullSize =
-            Command.headerSize +
-                Command.shortArgSize * this.handler.shortArgs +
-                Command.wideArgSize * this.handler.wideArgs;
+            Setup.headerSize +
+                Setup.shortArgSize * this.handler.shortArgs +
+                Setup.wideArgSize * this.handler.wideArgs;
     }
     AssemblyHolder.prototype.getHeader = function () {
         return this.handler.header;
@@ -168,7 +168,7 @@ var AssemblyController = (function () {
         var _this = this;
         var machineCode = "";
         holders.forEach(function (holder) {
-            machineCode += _this.toProperCodeString(holder.getHeader(), Command.headerSize);
+            machineCode += _this.toProperCodeString(holder.getHeader(), Setup.headerSize);
             machineCode += " ";
             machineCode += _this.convertArgs(holder.argHolders);
             machineCode += "  ";

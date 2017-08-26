@@ -28,23 +28,15 @@ var ProcessorView = (function () {
         }
         return cmd.toString();
     };
-    ProcessorView.prototype.formatCounter = function () {
-        var counter = model.getCounterRegister();
-        if (counter == null) {
-            return "none";
-        }
-        return counter.toString() + " (" + counter.toNum().toString() + ")";
-    };
     ProcessorView.prototype.write = function () {
         var _this = this;
         var model = this.model;
         this.addElement("Current", this.formatCommand());
-        this.addElement("Counter", this.formatCounter());
         this.addElement("Terminated", model.getTerminatedFlag().toString());
-        model.registers.forEach(function (value, index) {
-            return _this.addElement("R" + index, value.toString());
+        model.getRegisters().forEach(function (value, index) {
+            return _this.addElement("R" + index, value.toString() + " (" + value.toNum() + ")");
         });
-        this.memoryInput.value = model.memory.toString();
+        this.memoryInput.value = model.getAllMemory().toString();
     };
     return ProcessorView;
 }());

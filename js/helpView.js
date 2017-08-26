@@ -19,15 +19,15 @@ var HelpView = (function () {
     };
     HelpView.prototype.getFullHeaderText = function (item) {
         var header = item.header.toString(2);
-        while (header.length < Command.headerSize) {
+        while (header.length < Setup.headerSize) {
             header = "0" + header;
         }
         var args = "";
-        var shortSize = Command.shortArgSize;
+        var shortSize = Setup.shortArgSize;
         for (var i = 0; i < item.shortArgs; i++) {
             args += this.getArgText(i, shortSize);
         }
-        var wideSize = Command.wideArgSize;
+        var wideSize = Setup.wideArgSize;
         for (var i = 0; i < item.wideArgs; i++) {
             args += this.getArgText(item.shortArgs + i, wideSize);
         }

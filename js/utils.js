@@ -1,3 +1,16 @@
+var Setup = (function () {
+    function Setup() {
+    }
+    Setup.headerSize = 5;
+    Setup.shortArgSize = 2;
+    Setup.wideArgSize = 8;
+    Setup.regCount = 8;
+    Setup.serviceRegCount = 3;
+    Setup.regSize = 8;
+    Setup.terminatedBit = 0;
+    Setup.memorySize = 256;
+    return Setup;
+}());
 var BitSet = (function () {
     function BitSet(size) {
         this.values = [];

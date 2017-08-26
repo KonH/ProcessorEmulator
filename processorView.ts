@@ -36,21 +36,12 @@ class ProcessorView {
 		return cmd.toString();
 	}
 
-	private formatCounter() {
-		let counter = model.getCounterRegister();
-		if (counter == null) {
-			return "none";
-		}
-		return counter.toString() + " (" + counter.toNum().toString() + ")";
-	}
-
 	private write() {
 		let model = this.model;
 		this.addElement("Current", this.formatCommand());
-		this.addElement("Counter", this.formatCounter());
 		this.addElement("Terminated", model.getTerminatedFlag().toString());
-		model.registers.forEach((value, index) =>
-			this.addElement("R" + index, value.toString()));
-		this.memoryInput.value = model.memory.toString();
+		model.getRegisters().forEach((value, index) =>
+			this.addElement("R" + index, value.toString() + " (" + value.toNum() + ")"));
+		this.memoryInput.value = model.getAllMemory().toString();
 	}
 }

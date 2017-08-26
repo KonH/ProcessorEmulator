@@ -1,3 +1,14 @@
+class Setup {
+	static headerSize = 5;
+	static shortArgSize = 2;
+	static wideArgSize = 8;
+	static regCount = 8;
+	static serviceRegCount = 3;
+	static regSize = 8;
+	static terminatedBit = 0;
+	static memorySize = 256;
+}
+
 class BitSet {
 	private values:boolean[] = [];
 

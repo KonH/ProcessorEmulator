@@ -19,7 +19,12 @@ class CommandHelper {
 			new SaveHandler(),
 			new LoadByRegHandler(),
 			new SaveByRegHandler(),
-			new AddHandler()
+			new AddHandler(),
+			new PutHandler(),
+			new AddAccHandler(),
+			new AccMoveHandler(),
+			new LoadByAccRegHandler(),
+			new SaveByAccRegHandler()
 		]);
 	}
 
@@ -33,12 +38,12 @@ class CommandHelper {
 	}
 
 	private loadCommandDataWide(command : Command, count : number) {
-		let data = this.model.readBusData(count * Command.wideArgSize);
+		let data = this.model.readBusData(count * Setup.wideArgSize);
 		command.loadWideArgs(data, count);
 	}
 
 	private loadCommandDataShort(command : Command, count : number) {
-		let data = this.model.readBusData(count * Command.shortArgSize);
+		let data = this.model.readBusData(count * Setup.shortArgSize);
 		command.loadShortArgs(data, count);
 	}
 

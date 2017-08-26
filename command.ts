@@ -1,8 +1,4 @@
 class Command {
-	static headerSize = 4;
-	static shortArgSize = 2;
-	static wideArgSize = 8;
-
 	name : string = "UNK";
 
 	header : BitSet;
@@ -21,12 +17,12 @@ class Command {
 
 	loadShortArgs(data : BitSet, count : number) {
 		Logger.write("command", "loadShortArgs: " + data + ", " + count);
-		this.loadArgsBySize(data, count, Command.shortArgSize);
+		this.loadArgsBySize(data, count, Setup.shortArgSize);
 	}
 
 	loadWideArgs(data : BitSet, count : number) {
 		Logger.write("command", "loadWideArgs: " + data + ", " + count);
-		this.loadArgsBySize(data, count, Command.wideArgSize);
+		this.loadArgsBySize(data, count, Setup.wideArgSize);
 	}
 
 	toString() : string {

@@ -12,11 +12,11 @@ var Command = (function () {
     };
     Command.prototype.loadShortArgs = function (data, count) {
         Logger.write("command", "loadShortArgs: " + data + ", " + count);
-        this.loadArgsBySize(data, count, Command.shortArgSize);
+        this.loadArgsBySize(data, count, Setup.shortArgSize);
     };
     Command.prototype.loadWideArgs = function (data, count) {
         Logger.write("command", "loadWideArgs: " + data + ", " + count);
-        this.loadArgsBySize(data, count, Command.wideArgSize);
+        this.loadArgsBySize(data, count, Setup.wideArgSize);
     };
     Command.prototype.toString = function () {
         var line = "";
@@ -25,8 +25,5 @@ var Command = (function () {
         });
         return "CMD: " + this.header + " (" + this.name + ") ARGS: [" + line + "]";
     };
-    Command.headerSize = 4;
-    Command.shortArgSize = 2;
-    Command.wideArgSize = 8;
     return Command;
 }());
