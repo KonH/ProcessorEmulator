@@ -1,15 +1,15 @@
 var ProcessorController = (function () {
-    function ProcessorController(model, program, process, next) {
+    function ProcessorController(model, helper, program, process, next) {
         var _this = this;
         this.charCodeZero = "0".charCodeAt(0);
         this.charCodeNine = "9".charCodeAt(0);
         this.model = model;
+        this.helper = helper;
         this.programInput = program;
         this.processButton = process;
         this.nextButton = next;
         this.processButton.onclick = function () { return _this.onProcess(); };
         this.nextButton.onclick = function () { return _this.onNext(); };
-        this.helper = new CommandHelper(this.model);
         this.resetModel();
     }
     ProcessorController.prototype.resetModel = function () {

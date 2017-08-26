@@ -1,72 +1,36 @@
 <html>
 	<head>
 		<title>Processor Emulator</title>
+		<link rel="stylesheet" type="text/css" href="style.css">
 	</head>
 	<body>
-		<h2>Control:</h2>
-		<p>Bus:</p>
-		<p><textarea id="programInput"></textarea></p>
-		<p><button id="processBtn">Process</button><button id="nextBtn">Next</button></p>
-		<h2>State:</h2>
-		<ul id="state"></ul>
-		<h2>Help:</h2>
-		<h3>Architecture:</h3>
-		<ul>
-			<li><b>R0</b>: accumulator register</li>
-			<li><b>R1-R4</b>: common register</li>
-		</ul>
-		<h3>Commands:</h3>
-		<table>
-			<tr>
-				<td><b>0001 x^2</b></td> 
-				<td><b>RST</b></td> 
-				<td>r[x] = 0</td>
-			</tr>
-			<tr>
-				<td><b>0010 x^2</b></td>
-				<td><b>INC</b></td>
-				<td>r[x]++</td>
-			</tr>
-			<tr>
-				<td><b>0011 x^2 y^2</b></td>
-				<td><b>MOV</b></td>
-				<td>r[y] = r[x]</td>
-			</tr>
-			<tr>
-				<td><b>0100</b></td>
-				<td><b>RSTA</b></td>
-				<td>r[0] = 0</td>
-			</tr>
-			<tr>
-				<td><b>0101</b></td>
-				<td><b>INCA</b></td>
-				<td>r[0]++</td>
-			</tr>
-			<tr>
-				<td><b>0110 x^2</b></td>
-				<td><b>MOVA</b></td>
-				<td>r[0] = r[x]</td>
-			</tr>
-			<tr>
-				<td><b>0111 x^4</b></td>
-				<td><b>JMP</b></td>
-				<td>go to x</td>
-			</tr>
-			<tr>
-				<td><b>1000 x^2 y^4</b></td>
-				<td><b>JMZ</b></td>
-				<td>go to y if r[x] == 0</td>
-			</tr>
-			<tr>
-				<td><b>1001 x^2 y^2 z^4<b></td>
-				<td><b>JME</b></td>
-				<td>go to z if r[x] == r[y]</td>
-			</tr>
-		</table>
+		<div class="container">
+			<h2>Control:</h2>
+			<p>Bus:</p>
+			<p><textarea id="programInput" rows="8"></textarea></p>
+			<p><button id="processBtn">Process</button><button id="nextBtn">Next</button></p>
+		</div>
+		<div class="container">
+			<h2>State:</h2>
+			<ul id="state"></ul>
+		</div>
+		<div class="container">
+			<h2>Help:</h2>
+			<h3>Architecture:</h3>
+			<ul>
+				<li><b>R0</b>: accumulator register</li>
+				<li><b>R1-R4</b>: common register</li>
+			</ul>
+			<h3>Commands:</h3>
+			<table id="commandHelp"></table>
+		</div>
 		<script type="text/javascript" src="js/logger.js"></script>
 		<script type="text/javascript" src="js/command.js"></script>
 		<script type="text/javascript" src="js/processorModel.js"></script>
-		<script type="text/javascript" src="js/commands.js"></script>
+		<script type="text/javascript" src="js/handlerBase.js"></script>
+		<script type="text/javascript" src="js/handlers.js"></script>
+		<script type="text/javascript" src="js/commandHelper.js"></script>
+		<script type="text/javascript" src="js/helpView.js"></script>
 		<script type="text/javascript" src="js/processorView.js"></script>
 		<script type="text/javascript" src="js/processorController.js"></script>
 		<script type="text/javascript" src="js/main.js"></script>

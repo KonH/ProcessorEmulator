@@ -8,16 +8,17 @@ class ProcessorController {
 	private charCodeZero = "0".charCodeAt(0);
 	private charCodeNine = "9".charCodeAt(0);
 
-	constructor(model : ProcessorModel, program : HTMLTextAreaElement, process : HTMLButtonElement, next : HTMLButtonElement) {
+	constructor(
+		model : ProcessorModel, helper : CommandHelper, 
+		program : HTMLTextAreaElement, process : HTMLButtonElement, next : HTMLButtonElement)
+	{
 		this.model = model;
+		this.helper = helper;
 		this.programInput = program;
 		this.processButton = process;
 		this.nextButton = next;
 		this.processButton.onclick = () => this.onProcess();
 		this.nextButton.onclick = () => this.onNext();
-		
-		this.helper = new CommandHelper(this.model);
-
 		this.resetModel();
 	}
 
