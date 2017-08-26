@@ -14,11 +14,19 @@ var Command = (function () {
         }
         return array;
     };
-    Command.prototype.loadArgs = function (data, count) {
+    Command.prototype.loadArgsBySize = function (data, count, size) {
         var bodyData = this.toBitArray(data);
         for (var i = 0; i < count; i++) {
-            this.args.push(this.extractNum(bodyData, i * Command.argSize, Command.argSize));
+            this.args.push(this.extractNum(bodyData, i * size, size));
         }
+    };
+    Command.prototype.loadShortArgs = function (data, count) {
+        Logger.write("command", "loadShortArgs: " + data + ", " + count);
+        this.loadArgsBySize(data, count, Command.shortArgSize);
+    };
+    Command.prototype.loadWideArgs = function (data, count) {
+        Logger.write("command", "loadWideArgs: " + data + ", " + count);
+        this.loadArgsBySize(data, count, Command.wideArgSize);
     };
     Command.prototype.extractNum = function (data, start, len) {
         var parts = data.slice(start, start + len);
@@ -37,7 +45,8 @@ var Command = (function () {
         return "CMD: " + this.header.toString(2) + " (" + this.name +
             ") ARGS: [" + line + "]";
     };
-    Command.headerSize = 3;
-    Command.argSize = 2;
+    Command.headerSize = 4;
+    Command.shortArgSize = 2;
+    Command.wideArgSize = 4;
     return Command;
 }());

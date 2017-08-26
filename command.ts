@@ -1,6 +1,7 @@
 class Command {
-	static headerSize = 3;
-	static argSize = 2;
+	static headerSize = 4;
+	static shortArgSize = 2;
+	static wideArgSize = 4;
 
 	body : number[] = [];
 	header : number = 0;
@@ -20,11 +21,21 @@ class Command {
 		return array;
 	}
 
-	loadArgs(data : string, count : number) {
+	loadArgsBySize(data : string, count : number, size : number) {
 		let bodyData = this.toBitArray(data);
 		for (var i = 0; i < count; i++) {
-			this.args.push(this.extractNum(bodyData,  i * Command.argSize, Command.argSize));
+			this.args.push(this.extractNum(bodyData,  i * size, size));
 		}
+	}
+
+	loadShortArgs(data : string, count : number) {
+		Logger.write("command", "loadShortArgs: " + data + ", " + count);
+		this.loadArgsBySize(data, count, Command.shortArgSize);
+	}
+
+	loadWideArgs(data : string, count : number) {
+		Logger.write("command", "loadWideArgs: " + data + ", " + count);
+		this.loadArgsBySize(data, count, Command.wideArgSize);
 	}
 
 	extractNum(data : number[], start : number, len : number) : number { 

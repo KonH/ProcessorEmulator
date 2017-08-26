@@ -16,15 +16,54 @@
 			<li><b>R1-R4</b>: common register</li>
 		</ul>
 		<h3>Commands:</h3>
-		<ul>
-			<li><b>001xx RST</b>: r[xx] = 0;</li>
-			<li><b>010xx INC</b>: r[xx]++;</li>
-			<li><b>011xxyy PUT</b>: r[xx] = yy;</li>
-			<li><b>100 RSTA</b>: r[0] = 0;</li>
-			<li><b>101 INCA</b>: r[0]++;</li>
-			<li><b>110xx PUTA</b>: r[0] = xx;</li>
-			<li><b>111xx JMP</b>: go to xx;</li>
-		</ul>
+		<table>
+			<tr>
+				<td><b>0001 x^2</b></td> 
+				<td><b>RST</b></td> 
+				<td>r[x] = 0</td>
+			</tr>
+			<tr>
+				<td><b>0010 x^2</b></td>
+				<td><b>INC</b></td>
+				<td>r[x]++</td>
+			</tr>
+			<tr>
+				<td><b>0011 x^2 y^2</b></td>
+				<td><b>MOV</b></td>
+				<td>r[y] = r[x]</td>
+			</tr>
+			<tr>
+				<td><b>0100</b></td>
+				<td><b>RSTA</b></td>
+				<td>r[0] = 0</td>
+			</tr>
+			<tr>
+				<td><b>0101</b></td>
+				<td><b>INCA</b></td>
+				<td>r[0]++</td>
+			</tr>
+			<tr>
+				<td><b>0110 x^2</b></td>
+				<td><b>MOVA</b></td>
+				<td>r[0] = r[x]</td>
+			</tr>
+			<tr>
+				<td><b>0111 x^4</b></td>
+				<td><b>JMP</b></td>
+				<td>go to x</td>
+			</tr>
+			<tr>
+				<td><b>1000 x^2 y^4</b></td>
+				<td><b>JMZ</b></td>
+				<td>go to y if r[x] == 0</td>
+			</tr>
+			<tr>
+				<td><b>1001 x^2 y^2 z^4<b></td>
+				<td><b>JME</b></td>
+				<td>go to z if r[x] == r[y]</td>
+			</tr>
+		</table>
+		<script type="text/javascript" src="js/logger.js"></script>
 		<script type="text/javascript" src="js/command.js"></script>
 		<script type="text/javascript" src="js/processorModel.js"></script>
 		<script type="text/javascript" src="js/processorView.js"></script>
