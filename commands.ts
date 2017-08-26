@@ -1,12 +1,12 @@
 abstract class HandlerBase {
-	static accRegIdx = 0;
+	protected static accRegIdx = 0;
 
 	abstract header : number;
 	abstract name : string;
 	shortArgs : number = 0;
 	wideArgs : number = 0;
 
-	getCommonRegIdx(index : number) {
+	protected getCommonRegIdx(index : number) {
 		return index + 1;
 	}
 
@@ -14,7 +14,7 @@ abstract class HandlerBase {
 }
 
 abstract class MoveHandlerBase extends HandlerBase {
-	commonMove(model : ProcessorModel, fromIdx : number, toIdx : number) {
+	protected commonMove(model : ProcessorModel, fromIdx : number, toIdx : number) {
 		let fromValue = model.registers[fromIdx];
 		model.setRegister(toIdx, fromValue);
 	}
@@ -147,26 +147,26 @@ class CommandHelper {
 		]);
 	}
 
-	addHandlers(handlers : HandlerBase[]) {
+	private addHandlers(handlers : HandlerBase[]) {
 		handlers.forEach(handler => this.addHandler(handler));
 	}
 
-	addHandler(handler : HandlerBase) {
+	private addHandler(handler : HandlerBase) {
 		let key = handler.header;
 		this.commands.set(key, handler);
 	}
 
-	loadCommandDataWide(command : Command, count : number) {
+	private loadCommandDataWide(command : Command, count : number) {
 		let data = this.model.readBusData(count * Command.wideArgSize);
 		command.loadWideArgs(data, count);
 	}
 
-	loadCommandDataShort(command : Command, count : number) {
+	private loadCommandDataShort(command : Command, count : number) {
 		let data = this.model.readBusData(count * Command.shortArgSize);
 		command.loadShortArgs(data, count);
 	}
 
-	prepare(command : Command, name : string, shortArgs : number, wideArgs : number) {
+	private prepare(command : Command, name : string, shortArgs : number, wideArgs : number) {
 		Logger.write(
 			"commandHelper", 
 			"prepareCommand: " + name + ", short: " + shortArgs + ", wide: " + wideArgs);
@@ -179,7 +179,7 @@ class CommandHelper {
 		}
 	}
 
-	findHandler(header : number) {
+	private findHandler(header : number) {
 		if (this.commands.has(header)) {
 			return this.commands.get(header);
 		}

@@ -3,7 +3,7 @@ var ProcessorView = (function () {
         var _this = this;
         this.node = node;
         this.model = model;
-        this.model.onModelChanged = (function () { return _this.onModelChanged(); });
+        this.model.changedCallback = (function () { return _this.onModelChanged(); });
     }
     ProcessorView.prototype.onModelChanged = function () {
         this.clear();

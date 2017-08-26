@@ -1,37 +1,37 @@
 class ProcessorView {
-	node : HTMLElement;
-	model : ProcessorModel;
+	private node : HTMLElement;
+	private model : ProcessorModel;
 
 	constructor(node : HTMLElement, model : ProcessorModel) {
 		this.node = node;
 		this.model = model;
-		this.model.onModelChanged = (() => this.onModelChanged());
+		this.model.changedCallback = (() => this.onModelChanged());
 	}
 
-	onModelChanged() {
+	private onModelChanged() {
 		this.clear();
 		this.write();
 	}
 
-	clear() {
+	private clear() {
 		let node = this.node;
 		while (node.firstChild) {
 			node.removeChild(node.firstChild);
 		}
 	}
 
-	addElement(name : string, value : string) {
+	private addElement(name : string, value : string) {
 		let childNode = document.createElement("li");
 		childNode.innerHTML = "<b>" + name + "</b>: " + value;
 		this.node.appendChild(childNode);
 	}
 
-	formatProgram() : string {
+	private formatProgram() : string {
 		let program = this.model.program;
 		return program.length == 0 ? "none" : program;
 	}
 
-	formatCommand() : string {
+	private formatCommand() : string {
 		let cmd = this.model.command;
 		if (cmd == null) {
 			return "none";
@@ -39,7 +39,7 @@ class ProcessorView {
 		return cmd.format();
 	}
 
-	write() {
+	private write() {
 		let model = this.model;
 		this.addElement("Program", this.formatProgram());
 		this.addElement("Current", this.formatCommand());

@@ -13,7 +13,7 @@ class Command {
 		this.header = this.extractNum(headerData, 0, Command.headerSize);
 	}
 
-	toBitArray(str : string) {
+	private toBitArray(str : string) {
 		let array = [];
 		for (var i = 0; i < str.length; i++) {
 			array.push(parseInt(str[i]));
@@ -21,7 +21,7 @@ class Command {
 		return array;
 	}
 
-	loadArgsBySize(data : string, count : number, size : number) {
+	private loadArgsBySize(data : string, count : number, size : number) {
 		let bodyData = this.toBitArray(data);
 		for (var i = 0; i < count; i++) {
 			this.args.push(this.extractNum(bodyData,  i * size, size));
@@ -38,7 +38,7 @@ class Command {
 		this.loadArgsBySize(data, count, Command.wideArgSize);
 	}
 
-	extractNum(data : number[], start : number, len : number) : number { 
+	private extractNum(data : number[], start : number, len : number) : number { 
 		let parts = data.slice(start, start + len);
 		let value = 0;
 		for (var i = 0; i < len; i++) {

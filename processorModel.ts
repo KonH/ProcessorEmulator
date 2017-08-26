@@ -7,7 +7,7 @@ class ProcessorModel {
 
 	changedCallback : Function = null;
 
-	onModelChanged() {
+	private onModelChanged() {
 		if (this.changedCallback != null) {
 			this.changedCallback();
 		}
@@ -30,6 +30,7 @@ class ProcessorModel {
 	readBusData(len : number) : string {
 		let data = this.program.slice(this.counter, this.counter + len);
 		this.counter += len;
+		this.onModelChanged();
 		return data;
 	}
 

@@ -23,6 +23,7 @@ var ProcessorModel = (function () {
     ProcessorModel.prototype.readBusData = function (len) {
         var data = this.program.slice(this.counter, this.counter + len);
         this.counter += len;
+        this.onModelChanged();
         return data;
     };
     ProcessorModel.prototype.updateCommand = function () {
