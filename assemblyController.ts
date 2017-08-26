@@ -152,7 +152,7 @@ class AssemblyController {
 		for (var i = 0; i < this.holders.length; i++) {
 			let item = this.holders[i];
 			if (this.isHolderWithMark(item, name)) {
-				Logger.write("assemblyController", "addr for '" + name + "' is " + index);
+				Logger.write("assemblyController", "addr for '" + name + "' is " + index + " (" + index.toString(2) + ")");
 				return index;
 			}
 			index += item.fullSize;

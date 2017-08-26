@@ -1,7 +1,7 @@
 class Command {
 	static headerSize = 4;
 	static shortArgSize = 2;
-	static wideArgSize = 4;
+	static wideArgSize = 8;
 
 	name : string = "UNK";
 

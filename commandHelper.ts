@@ -16,7 +16,10 @@ class CommandHelper {
 			new JumpZeroHandler(),
 			new JumpEqualHandler(),
 			new LoadHandler(),
-			new SaveHandler()
+			new SaveHandler(),
+			new LoadByRegHandler(),
+			new SaveByRegHandler(),
+			new AddHandler()
 		]);
 	}
 

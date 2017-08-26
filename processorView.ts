@@ -28,11 +28,6 @@ class ProcessorView {
 		this.node.appendChild(childNode);
 	}
 
-	private formatProgram() : string {
-		let program = this.model.program;
-		return program == null ? "none" : program.toString();
-	}
-
 	private formatCommand() : string {
 		let cmd = this.model.command;
 		if (cmd == null) {
@@ -51,7 +46,6 @@ class ProcessorView {
 
 	private write() {
 		let model = this.model;
-		this.addElement("Program", this.formatProgram());
 		this.addElement("Current", this.formatCommand());
 		this.addElement("Counter", this.formatCounter());
 		this.addElement("Terminated", model.getTerminatedFlag().toString());

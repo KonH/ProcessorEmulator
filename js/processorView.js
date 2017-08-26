@@ -21,10 +21,6 @@ var ProcessorView = (function () {
         childNode.innerHTML = "<b>" + name + "</b>: " + value;
         this.node.appendChild(childNode);
     };
-    ProcessorView.prototype.formatProgram = function () {
-        var program = this.model.program;
-        return program == null ? "none" : program.toString();
-    };
     ProcessorView.prototype.formatCommand = function () {
         var cmd = this.model.command;
         if (cmd == null) {
@@ -42,7 +38,6 @@ var ProcessorView = (function () {
     ProcessorView.prototype.write = function () {
         var _this = this;
         var model = this.model;
-        this.addElement("Program", this.formatProgram());
         this.addElement("Current", this.formatCommand());
         this.addElement("Counter", this.formatCounter());
         this.addElement("Terminated", model.getTerminatedFlag().toString());

@@ -27,6 +27,6 @@ var Command = (function () {
     };
     Command.headerSize = 4;
     Command.shortArgSize = 2;
-    Command.wideArgSize = 4;
+    Command.wideArgSize = 8;
     return Command;
 }());

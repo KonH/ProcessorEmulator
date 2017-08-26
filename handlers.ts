@@ -108,11 +108,11 @@ class JumpEqualHandler extends HandlerBase {
 
 	exec(cmd : Command, model : ProcessorModel) {
 		let leftIdx = model.getCommonRegIdx(cmd.args[0]);
-		let rightIdx = model.getCommonRegIdx(cmd.args[0]);
+		let rightIdx = model.getCommonRegIdx(cmd.args[1]);
 		let registers = model.registers;
 		let condition = registers[leftIdx] == registers[rightIdx];
 		if (condition) {
-			model.setCounter(cmd.args[0]);
+			model.setCounter(cmd.args[2]);
 		}
 	}
 }
@@ -145,5 +145,51 @@ class SaveHandler extends HandlerBase {
 		let regIdx = model.getCommonRegIdx(cmd.args[0]);
 		let content = model.registers[regIdx];
 		model.setMemory(addr, content);
+	}
+}
+
+class LoadByRegHandler extends HandlerBase {
+	header = 0b1100;
+	name = "LDR";
+	shortArgs = 2;
+	description = "load mem from r[x] to r[y]";
+
+	exec(cmd : Command, model : ProcessorModel) {
+		let addr = cmd.args[1];
+		let len = ProcessorModel.regSize;
+		let result = model.getMemory(addr, len);
+		let regIdx = model.getCommonRegIdx(cmd.args[0]);
+		model.setRegister(regIdx, result);
+	}
+}
+
+class SaveByRegHandler extends HandlerBase {
+	header = 0b1101;
+	name = "SVR";
+	shortArgs = 2;
+	description = "save r[x] to mem at r[y]";
+
+	exec(cmd : Command, model : ProcessorModel) {
+		let addrRegIdx = model.getCommonRegIdx(cmd.args[1]);
+		let addr = model.registers[addrRegIdx];
+		let contentRegIdx = model.getCommonRegIdx(cmd.args[0]);
+		let content = model.registers[contentRegIdx];
+		model.setMemory(addr, content);
+	}
+}
+
+class AddHandler extends HandlerBase {
+	header = 0b1111;
+	name = "ADD";
+	shortArgs = 2;
+	description = "add r[x] to r[y]";
+
+	exec(cmd : Command, model : ProcessorModel) {
+		let sendIdx = model.getCommonRegIdx(cmd.args[0]);
+		let recIdx = model.getCommonRegIdx(cmd.args[1]);
+		let sendValue = model.registers[sendIdx];
+		let recValue = model.registers[recIdx];
+		let newVal = BitSet.fromNum(sendValue.toNum() + recValue.toNum(), ProcessorModel.regSize);
+		model.setRegister(recIdx, newVal);
 	}
 }

@@ -47,6 +47,7 @@ var ProcessorModel = (function () {
         var counter = this.getCounterRegister();
         var data = this.program.subset(counter.toNum(), len);
         var newCounter = counter.addValue(len);
+        Logger.write("processorModel", "readBusData: counter: " + counter + " => " + newCounter);
         this.setCounter(newCounter);
         this.onModelChanged();
         return data;
@@ -63,14 +64,17 @@ var ProcessorModel = (function () {
         this.onModelChanged();
     };
     ProcessorModel.prototype.setRegister = function (index, value) {
+        Logger.write("processorModel", "setRegister: " + index + ": " + value.toString());
         this.registers[index] = value;
         this.onModelChanged();
     };
     ProcessorModel.prototype.setCounter = function (value) {
+        Logger.write("processorModel", "setCounter: " + value.toString());
         this.registers[this.getCounterRegIdx()] = value;
         this.onModelChanged();
     };
     ProcessorModel.prototype.setMemory = function (address, content) {
+        Logger.write("processorModel", "setMemory: at " + address.toString() + ": " + content.toString());
         this.memory = this.memory.setBits(address.toNum(), content);
         this.onModelChanged();
     };

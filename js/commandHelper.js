@@ -14,7 +14,10 @@ var CommandHelper = (function () {
             new JumpZeroHandler(),
             new JumpEqualHandler(),
             new LoadHandler(),
-            new SaveHandler()
+            new SaveHandler(),
+            new LoadByRegHandler(),
+            new SaveByRegHandler(),
+            new AddHandler()
         ]);
     }
     CommandHelper.prototype.addHandlers = function (handlers) {
