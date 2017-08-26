@@ -12,8 +12,11 @@ class ArgHolder {
 class AssemblyHolder {
 	handler : HandlerBase;
 	argHolders : ArgHolder[] = [];
+	mark : string;
+	fullSize : number;
 
-	constructor(handler : HandlerBase, args : string[]) {
+	constructor(mark : string, handler : HandlerBase, args : string[]) {
+		this.mark = mark;
 		this.handler = handler;
 		let argIndex = 0;
 		for (var i = 0; i < this.handler.shortArgs; i++) {
@@ -24,6 +27,10 @@ class AssemblyHolder {
 			this.argHolders.push(new ArgHolder(args[argIndex], Command.wideArgSize));
 			argIndex++;
 		}
+		this.fullSize = 
+			Command.headerSize + 
+			Command.shortArgSize * this.handler.shortArgs + 
+			Command.wideArgSize * this.handler.wideArgs;
 	}
 
 	getHeader() {
@@ -39,6 +46,8 @@ class AssemblyController {
 	private generateButton : HTMLButtonElement;
 	private helper : CommandHelper;
 
+	private holders : AssemblyHolder[];
+
 	constructor(
 		assembly : HTMLTextAreaElement, machine : HTMLTextAreaElement, generate : HTMLButtonElement, helper : CommandHelper) 
 	{
@@ -51,9 +60,9 @@ class AssemblyController {
 
 	private generateMachineCode(assemblyCode : string) {
 		let lines = assemblyCode.split('\n');
-		let holders = this.createHolders(lines);
-		this.setupAllArgValues(holders);
-		let machineCode = this.getMachineCode(holders);
+		this.holders = this.createHolders(lines);
+		this.setupAllArgValues(this.holders);
+		let machineCode = this.getMachineCode(this.holders);
 		this.machineCodeInput.value = machineCode;
 	}
 
@@ -68,24 +77,36 @@ class AssemblyController {
 		return holders;
 	}
 
-	convertLine(line : string) : AssemblyHolder {
-		let parts = line.split(' ');
-		Logger.write("assemblyController", "line parts: " + parts);
-		if (parts.length > 0) {
-			var name = parts[0];
-			var args = parts.splice(1);
-			return this.createHolder(name, args);
+	findMark(name : string) : string {
+		if (name.endsWith(":")) {
+			return name.replace(":", "");
 		}
 		return null;
 	}
 
-	private createHolder(name : string, args : string[]) : AssemblyHolder {
+	convertLine(line : string) : AssemblyHolder {
+		let parts = line.split(' ');
+		Logger.write("assemblyController", "line parts: " + parts);
+		if (parts.length > 0) {
+			let name : string;
+			let args : string[];
+			let mark = this.findMark(parts[0]);
+			let hasMark = (mark != null);
+			name = parts[hasMark ? 1 : 0];
+			args = parts.splice(hasMark ? 2 : 1);
+			return this.createHolder(mark, name, args);
+		}
+		return null;
+	}
+
+	private createHolder(mark : string, name : string, args : string[]) : AssemblyHolder {
 		Logger.write("assemblyController", "createCommand from '" + name + "', " + args);
 		let handler = this.helper.findHandlerByName(name);
 		if (handler != null) {
 			let argCount = handler.shortArgs + handler.wideArgs;
 			if (args.length == argCount ) {
-				return new AssemblyHolder(handler, args);
+				Logger.write("assemblyController", "new holder: '" + mark + "', '" + name + "', " + args);
+				return new AssemblyHolder(mark, handler, args);
 			} else {
 				Logger.write("assemblyController", "wrong arg count: " + args.length + ", but " + argCount + " expected");
 			}
@@ -113,7 +134,7 @@ class AssemblyController {
 		return this.parseInt(name.slice(1)) - 1;
 	}
 
-	private tryConvertRegisterAbbr(arg : ArgHolder) : boolean {
+	private tryConvertRegisterAlias(arg : ArgHolder) : boolean {
 		let value = arg.rawValue;
 		if (value.startsWith("%")) {
 			arg.readyValue = this.getRegisterAddrByName(value);
@@ -122,8 +143,35 @@ class AssemblyController {
 		return false;
 	}
 
+	private isHolderWithMark(holder : AssemblyHolder, name : string) {
+		return (holder.mark == name);
+	}
+
+	private findCommandAddr(name : string) : number {
+		let index = 0;
+		for (var i = 0; i < this.holders.length; i++) {
+			let item = this.holders[i];
+			if (this.isHolderWithMark(item, name)) {
+				Logger.write("assemblyController", "addr for '" + name + "' is " + index);
+				return index;
+			}
+			index += item.fullSize;
+		}
+		Logger.write("assemblyController", "can't find mark by name '" + name + "'");
+		return 0;
+	}
+
+	private tryConvertMarkAlias(arg : ArgHolder) : boolean {
+		let value = arg.rawValue;
+		if (value.startsWith("$")) {
+			arg.readyValue = this.findCommandAddr(value.substr(1));
+			return true;
+		}
+		return false;
+	}
+
 	private setupArgValue(arg : ArgHolder) {
-		if(!this.tryConvertRegisterAbbr(arg)) {
+		if (!this.tryConvertRegisterAlias(arg) && !this.tryConvertMarkAlias(arg)) {
 			arg.readyValue = this.parseInt(arg.rawValue);
 		}
 	}

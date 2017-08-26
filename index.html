@@ -22,13 +22,19 @@
 			<h2>Help:</h2>
 			<h3>Architecture:</h3>
 			<ul>
+				<li><b>Header</b>: 4-bit</li>
+				<li><b>Short arg</b>: 2-bit</li>
+				<li><b>Wide arg</b>: 4-bit</li>
+				<li><b>Reg. arg</b>: short</li>
+				<li><b>Jmp. arg</b>: wide</li>
 				<li><b>R0</b>: accumulator register</li>
 				<li><b>R1-R4</b>: common register</li>
 			</ul>
 			<h3>Assembler:</h3>
 			<ul>
-				<li><b>%x</b> - common register x</li>
-				
+				<li><b>%x</b> - common register x alias</li>
+				<li><b>x: cmd ...</b> - mark definition</li>
+				<li><b>$x</b> - mark alias</li>
 			</ul>
 			<h3>Commands:</h3>
 			<table id="commandHelp"></table>

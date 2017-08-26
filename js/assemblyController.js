@@ -6,8 +6,9 @@ var ArgHolder = (function () {
     return ArgHolder;
 }());
 var AssemblyHolder = (function () {
-    function AssemblyHolder(handler, args) {
+    function AssemblyHolder(mark, handler, args) {
         this.argHolders = [];
+        this.mark = mark;
         this.handler = handler;
         var argIndex = 0;
         for (var i = 0; i < this.handler.shortArgs; i++) {
@@ -18,6 +19,10 @@ var AssemblyHolder = (function () {
             this.argHolders.push(new ArgHolder(args[argIndex], Command.wideArgSize));
             argIndex++;
         }
+        this.fullSize =
+            Command.headerSize +
+                Command.shortArgSize * this.handler.shortArgs +
+                Command.wideArgSize * this.handler.wideArgs;
     }
     AssemblyHolder.prototype.getHeader = function () {
         return this.handler.header;
@@ -35,9 +40,9 @@ var AssemblyController = (function () {
     }
     AssemblyController.prototype.generateMachineCode = function (assemblyCode) {
         var lines = assemblyCode.split('\n');
-        var holders = this.createHolders(lines);
-        this.setupAllArgValues(holders);
-        var machineCode = this.getMachineCode(holders);
+        this.holders = this.createHolders(lines);
+        this.setupAllArgValues(this.holders);
+        var machineCode = this.getMachineCode(this.holders);
         this.machineCodeInput.value = machineCode;
     };
     AssemblyController.prototype.createHolders = function (lines) {
@@ -51,23 +56,34 @@ var AssemblyController = (function () {
         });
         return holders;
     };
+    AssemblyController.prototype.findMark = function (name) {
+        if (name.endsWith(":")) {
+            return name.replace(":", "");
+        }
+        return null;
+    };
     AssemblyController.prototype.convertLine = function (line) {
         var parts = line.split(' ');
         Logger.write("assemblyController", "line parts: " + parts);
         if (parts.length > 0) {
-            var name = parts[0];
-            var args = parts.splice(1);
-            return this.createHolder(name, args);
+            var name_1;
+            var args = void 0;
+            var mark = this.findMark(parts[0]);
+            var hasMark = (mark != null);
+            name_1 = parts[hasMark ? 1 : 0];
+            args = parts.splice(hasMark ? 2 : 1);
+            return this.createHolder(mark, name_1, args);
         }
         return null;
     };
-    AssemblyController.prototype.createHolder = function (name, args) {
+    AssemblyController.prototype.createHolder = function (mark, name, args) {
         Logger.write("assemblyController", "createCommand from '" + name + "', " + args);
         var handler = this.helper.findHandlerByName(name);
         if (handler != null) {
             var argCount = handler.shortArgs + handler.wideArgs;
             if (args.length == argCount) {
-                return new AssemblyHolder(handler, args);
+                Logger.write("assemblyController", "new holder: '" + mark + "', '" + name + "', " + args);
+                return new AssemblyHolder(mark, handler, args);
             }
             else {
                 Logger.write("assemblyController", "wrong arg count: " + args.length + ", but " + argCount + " expected");
@@ -94,7 +110,7 @@ var AssemblyController = (function () {
     AssemblyController.prototype.getRegisterAddrByName = function (name) {
         return this.parseInt(name.slice(1)) - 1;
     };
-    AssemblyController.prototype.tryConvertRegisterAbbr = function (arg) {
+    AssemblyController.prototype.tryConvertRegisterAlias = function (arg) {
         var value = arg.rawValue;
         if (value.startsWith("%")) {
             arg.readyValue = this.getRegisterAddrByName(value);
@@ -102,8 +118,32 @@ var AssemblyController = (function () {
         }
         return false;
     };
+    AssemblyController.prototype.isHolderWithMark = function (holder, name) {
+        return (holder.mark == name);
+    };
+    AssemblyController.prototype.findCommandAddr = function (name) {
+        var index = 0;
+        for (var i = 0; i < this.holders.length; i++) {
+            var item = this.holders[i];
+            if (this.isHolderWithMark(item, name)) {
+                Logger.write("assemblyController", "addr for '" + name + "' is " + index);
+                return index;
+            }
+            index += item.fullSize;
+        }
+        Logger.write("assemblyController", "can't find mark by name '" + name + "'");
+        return 0;
+    };
+    AssemblyController.prototype.tryConvertMarkAlias = function (arg) {
+        var value = arg.rawValue;
+        if (value.startsWith("$")) {
+            arg.readyValue = this.findCommandAddr(value.substr(1));
+            return true;
+        }
+        return false;
+    };
     AssemblyController.prototype.setupArgValue = function (arg) {
-        if (!this.tryConvertRegisterAbbr(arg)) {
+        if (!this.tryConvertRegisterAlias(arg) && !this.tryConvertMarkAlias(arg)) {
             arg.readyValue = this.parseInt(arg.rawValue);
         }
     };
