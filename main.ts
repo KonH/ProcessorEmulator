@@ -1,7 +1,8 @@
 var model = new ProcessorModel();
 
 var stateNode = document.getElementById("state");
-var view = new ProcessorView(stateNode, model);
+var memInput = <HTMLTextAreaElement>document.getElementById("memoryInput");
+var view = new ProcessorView(stateNode, memInput, model);
 
 var helper = new CommandHelper(model);
 
@@ -15,4 +16,5 @@ var assemblyController = new AssemblyController(assemblyCode, machineCode, conve
 
 var process = <HTMLButtonElement>document.getElementById("processBtn");
 var next = <HTMLButtonElement>document.getElementById("nextBtn");
-var procController = new ProcessorController(model, helper, machineCode, process, next);
+var auto = <HTMLButtonElement>document.getElementById("autoBtn");
+var procController = new ProcessorController(model, helper, machineCode, memInput, process, next, auto);

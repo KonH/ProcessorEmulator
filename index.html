@@ -12,11 +12,17 @@
 		<div class="container">
 			<h2>Machine Code:</h2>
 			<p><textarea id="machineInput" rows="24"></textarea></p>
-			<p><button id="processBtn">Process</button><button id="nextBtn">Next</button></p>
+			<p>
+				<button id="processBtn">Process</button>
+				<button id="nextBtn">Next</button>
+				<button id="autoBtn">Auto</button></p>
 		</div>
 		<div class="container">
 			<h2>State:</h2>
+			<h3>Status:</h3>
 			<ul id="state"></ul>
+			<h3>Memory:</h3>
+			<p><textarea id="memoryInput" rows="12"></textarea></p>
 		</div>
 		<div class="container">
 			<h2>Help:</h2>
@@ -27,7 +33,8 @@
 				<li><b>Wide arg</b>: 4-bit</li>
 				<li><b>Reg. arg</b>: short</li>
 				<li><b>Jmp. arg</b>: wide</li>
-				<li><b>Reg. size</b>: 4-bit</li>
+				<li><b>Reg. size</b>: 8-bit</li>
+				<li><b>Mem. size</b>: 256-bit</li>
 				<li><b>R0</b>: counter register</li>
 				<li><b>R1</b>: system register</li>
 				<li><b>R2</b>: accumulator register</li>

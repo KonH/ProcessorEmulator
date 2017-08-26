@@ -1,9 +1,11 @@
 class ProcessorView {
 	private node : HTMLElement;
+	private memoryInput : HTMLTextAreaElement;
 	private model : ProcessorModel;
 
-	constructor(node : HTMLElement, model : ProcessorModel) {
+	constructor(node : HTMLElement, memory : HTMLTextAreaElement, model : ProcessorModel) {
 		this.node = node;
+		this.memoryInput = memory;
 		this.model = model;
 		this.model.changedCallback = (() => this.onModelChanged());
 	}
@@ -55,5 +57,6 @@ class ProcessorView {
 		this.addElement("Terminated", model.getTerminatedFlag().toString());
 		model.registers.forEach((value, index) =>
 			this.addElement("R" + index, value.toString()));
+		this.memoryInput.value = model.memory.toString();
 	}
 }

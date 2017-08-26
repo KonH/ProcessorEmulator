@@ -14,7 +14,9 @@ class CommandHelper {
 			new MoveAccHandler(),
 			new JumpHandler(),
 			new JumpZeroHandler(),
-			new JumpEqualHandler()
+			new JumpEqualHandler(),
+			new LoadHandler(),
+			new SaveHandler()
 		]);
 	}
 

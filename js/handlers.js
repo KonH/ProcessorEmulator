@@ -163,3 +163,42 @@ var JumpEqualHandler = (function (_super) {
     };
     return JumpEqualHandler;
 }(HandlerBase));
+var LoadHandler = (function (_super) {
+    __extends(LoadHandler, _super);
+    function LoadHandler() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.header = 10;
+        _this.name = "LD";
+        _this.shortArgs = 1;
+        _this.wideArgs = 1;
+        _this.description = "load mem from y to r[x]";
+        return _this;
+    }
+    LoadHandler.prototype.exec = function (cmd, model) {
+        var addr = cmd.args[1];
+        var len = ProcessorModel.regSize;
+        var result = model.getMemory(addr, len);
+        var regIdx = model.getCommonRegIdx(cmd.args[0]);
+        model.setRegister(regIdx, result);
+    };
+    return LoadHandler;
+}(HandlerBase));
+var SaveHandler = (function (_super) {
+    __extends(SaveHandler, _super);
+    function SaveHandler() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.header = 11;
+        _this.name = "SV";
+        _this.shortArgs = 1;
+        _this.wideArgs = 1;
+        _this.description = "save r[x] to mem at y";
+        return _this;
+    }
+    SaveHandler.prototype.exec = function (cmd, model) {
+        var addr = cmd.args[1];
+        var regIdx = model.getCommonRegIdx(cmd.args[0]);
+        var content = model.registers[regIdx];
+        model.setMemory(addr, content);
+    };
+    return SaveHandler;
+}(HandlerBase));

@@ -54,6 +54,14 @@ class BitSet {
 		return newSet;
 	}
 
+	setBits(start : number, content : BitSet) {
+		var newSet = this.clone();
+		for (var i = start; i < start + content.getSize(); i++) {
+			newSet.values[i] = content.values[i - start];
+		}
+		return newSet;
+	}
+
 	addValue(value : number) : BitSet {
 		let newValue = this.toNum() + value;
 		return BitSet.fromNum(newValue, this.getSize());

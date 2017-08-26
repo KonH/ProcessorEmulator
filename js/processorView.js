@@ -1,7 +1,8 @@
 var ProcessorView = (function () {
-    function ProcessorView(node, model) {
+    function ProcessorView(node, memory, model) {
         var _this = this;
         this.node = node;
+        this.memoryInput = memory;
         this.model = model;
         this.model.changedCallback = (function () { return _this.onModelChanged(); });
     }
@@ -48,6 +49,7 @@ var ProcessorView = (function () {
         model.registers.forEach(function (value, index) {
             return _this.addElement("R" + index, value.toString());
         });
+        this.memoryInput.value = model.memory.toString();
     };
     return ProcessorView;
 }());

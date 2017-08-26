@@ -12,6 +12,7 @@ var ProcessorModel = (function () {
         this.program = null;
         this.command = null;
         this.registers.fill(new BitSet(ProcessorModel.regSize));
+        this.memory = new BitSet(ProcessorModel.memorySize);
         this.onModelChanged();
     };
     ProcessorModel.prototype.getCounterRegIdx = function () {
@@ -38,6 +39,9 @@ var ProcessorModel = (function () {
     };
     ProcessorModel.prototype.getTerminatedFlag = function () {
         return this.getSystemRegister().getBit(ProcessorModel.terminatedBit);
+    };
+    ProcessorModel.prototype.getMemory = function (address, len) {
+        return this.memory.subset(address.toNum(), len);
     };
     ProcessorModel.prototype.readBusData = function (len) {
         var counter = this.getCounterRegister();
@@ -66,10 +70,14 @@ var ProcessorModel = (function () {
         this.registers[this.getCounterRegIdx()] = value;
         this.onModelChanged();
     };
+    ProcessorModel.prototype.setMemory = function (address, content) {
+        this.memory = this.memory.setBits(address.toNum(), content);
+        this.onModelChanged();
+    };
     ProcessorModel.regCount = 8;
     ProcessorModel.serviceRegCount = 3;
-    ProcessorModel.counterSize = 4;
-    ProcessorModel.regSize = 4;
+    ProcessorModel.regSize = 8;
     ProcessorModel.terminatedBit = 0;
+    ProcessorModel.memorySize = 256;
     return ProcessorModel;
 }());

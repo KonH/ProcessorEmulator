@@ -1,24 +1,32 @@
 class ProcessorController {
 	private model : ProcessorModel;
 	private programInput : HTMLTextAreaElement;
+	private memoryInput : HTMLTextAreaElement;
 	private processButton : HTMLButtonElement;
 	private nextButton : HTMLButtonElement;
+	private autoButton : HTMLButtonElement;
 
 	private helper : CommandHelper;
 	private charCodeZero = "0".charCodeAt(0);
 	private charCodeNine = "9".charCodeAt(0);
 
+	private autoInterval = null;
+
 	constructor(
 		model : ProcessorModel, helper : CommandHelper, 
-		program : HTMLTextAreaElement, process : HTMLButtonElement, next : HTMLButtonElement)
+		program : HTMLTextAreaElement, memory : HTMLTextAreaElement,
+		process : HTMLButtonElement, next : HTMLButtonElement, auto : HTMLButtonElement)
 	{
 		this.model = model;
 		this.helper = helper;
 		this.programInput = program;
+		this.memoryInput = memory;
 		this.processButton = process;
 		this.nextButton = next;
+		this.autoButton = auto;
 		this.processButton.onclick = () => this.onProcess();
 		this.nextButton.onclick = () => this.onNext();
+		this.autoButton.onclick = () => this.onAuto();
 		this.resetModel();
 	}
 
@@ -55,6 +63,20 @@ class ProcessorController {
 		this.checkTermination();
 		if (!this.model.getTerminatedFlag()) {
 			this.processCommand();
+		} else {
+			this.stopAuto();
+		}
+	}
+
+	private onAuto() {
+		Logger.write("processorController", "onAuto");
+		this.autoInterval = setInterval(() => this.onNext(), 0.1);
+	}
+
+	private stopAuto() {
+		if (this.autoInterval != null) {
+			window.clearInterval(this.autoInterval);
+			this.autoInterval = null;
 		}
 	}
 

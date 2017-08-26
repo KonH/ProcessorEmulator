@@ -116,3 +116,34 @@ class JumpEqualHandler extends HandlerBase {
 		}
 	}
 }
+
+class LoadHandler extends HandlerBase {
+	header = 0b1010;
+	name = "LD";
+	shortArgs = 1;
+	wideArgs = 1;
+	description = "load mem from y to r[x]";
+
+	exec(cmd : Command, model : ProcessorModel) {
+		let addr = cmd.args[1];
+		let len = ProcessorModel.regSize;
+		let result = model.getMemory(addr, len);
+		let regIdx = model.getCommonRegIdx(cmd.args[0]);
+		model.setRegister(regIdx, result);
+	}
+}
+
+class SaveHandler extends HandlerBase {
+	header = 0b1011;
+	name = "SV";
+	shortArgs = 1;
+	wideArgs = 1;
+	description = "save r[x] to mem at y";
+
+	exec(cmd : Command, model : ProcessorModel) {
+		let addr = cmd.args[1];
+		let regIdx = model.getCommonRegIdx(cmd.args[0]);
+		let content = model.registers[regIdx];
+		model.setMemory(addr, content);
+	}
+}

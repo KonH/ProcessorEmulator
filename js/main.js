@@ -1,6 +1,7 @@
 var model = new ProcessorModel();
 var stateNode = document.getElementById("state");
-var view = new ProcessorView(stateNode, model);
+var memInput = document.getElementById("memoryInput");
+var view = new ProcessorView(stateNode, memInput, model);
 var helper = new CommandHelper(model);
 var table = document.getElementById("commandHelp");
 var helpView = new HelpView(table, helper);
@@ -10,4 +11,5 @@ var convert = document.getElementById("convertBtn");
 var assemblyController = new AssemblyController(assemblyCode, machineCode, convert, helper);
 var process = document.getElementById("processBtn");
 var next = document.getElementById("nextBtn");
-var procController = new ProcessorController(model, helper, machineCode, process, next);
+var auto = document.getElementById("autoBtn");
+var procController = new ProcessorController(model, helper, machineCode, memInput, process, next, auto);

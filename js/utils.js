@@ -44,6 +44,13 @@ var BitSet = (function () {
         newSet.values[index] = value;
         return newSet;
     };
+    BitSet.prototype.setBits = function (start, content) {
+        var newSet = this.clone();
+        for (var i = start; i < start + content.getSize(); i++) {
+            newSet.values[i] = content.values[i - start];
+        }
+        return newSet;
+    };
     BitSet.prototype.addValue = function (value) {
         var newValue = this.toNum() + value;
         return BitSet.fromNum(newValue, this.getSize());

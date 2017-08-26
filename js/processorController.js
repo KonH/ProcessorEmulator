@@ -1,15 +1,19 @@
 var ProcessorController = (function () {
-    function ProcessorController(model, helper, program, process, next) {
+    function ProcessorController(model, helper, program, memory, process, next, auto) {
         var _this = this;
         this.charCodeZero = "0".charCodeAt(0);
         this.charCodeNine = "9".charCodeAt(0);
+        this.autoInterval = null;
         this.model = model;
         this.helper = helper;
         this.programInput = program;
+        this.memoryInput = memory;
         this.processButton = process;
         this.nextButton = next;
+        this.autoButton = auto;
         this.processButton.onclick = function () { return _this.onProcess(); };
         this.nextButton.onclick = function () { return _this.onNext(); };
+        this.autoButton.onclick = function () { return _this.onAuto(); };
         this.resetModel();
     }
     ProcessorController.prototype.resetModel = function () {
@@ -41,6 +45,20 @@ var ProcessorController = (function () {
         this.checkTermination();
         if (!this.model.getTerminatedFlag()) {
             this.processCommand();
+        }
+        else {
+            this.stopAuto();
+        }
+    };
+    ProcessorController.prototype.onAuto = function () {
+        var _this = this;
+        Logger.write("processorController", "onAuto");
+        this.autoInterval = setInterval(function () { return _this.onNext(); }, 0.1);
+    };
+    ProcessorController.prototype.stopAuto = function () {
+        if (this.autoInterval != null) {
+            window.clearInterval(this.autoInterval);
+            this.autoInterval = null;
         }
     };
     ProcessorController.prototype.processCommand = function () {

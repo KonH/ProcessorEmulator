@@ -1,13 +1,14 @@
 class ProcessorModel {
 	static regCount : number = 8;
 	static serviceRegCount : number = 3;
-	static counterSize : number = 4;
-	static regSize : number = 4;
+	static regSize : number = 8;
 	static terminatedBit = 0;
+	static memorySize = 256;
 
 	program : BitSet;
 	command : Command;
 	registers : BitSet[];
+	memory : BitSet;
 
 	changedCallback : Function = null;
 
@@ -25,6 +26,7 @@ class ProcessorModel {
 		this.program = null;
 		this.command = null;
 		this.registers.fill(new BitSet(ProcessorModel.regSize));
+		this.memory = new BitSet(ProcessorModel.memorySize);
 		this.onModelChanged();
 	}
 
@@ -61,6 +63,10 @@ class ProcessorModel {
 		return this.getSystemRegister().getBit(ProcessorModel.terminatedBit);
 	}
 
+	getMemory(address : BitSet, len : number) : BitSet {
+		return this.memory.subset(address.toNum(), len);
+	}
+
 	readBusData(len : number) : BitSet {
 		let counter = this.getCounterRegister();
 		let data = this.program.subset(counter.toNum(), len);
@@ -90,6 +96,11 @@ class ProcessorModel {
 
 	setCounter(value : BitSet) {
 		this.registers[this.getCounterRegIdx()] = value;
+		this.onModelChanged();
+	}
+
+	setMemory(address : BitSet, content : BitSet) {
+		this.memory = this.memory.setBits(address.toNum(), content);
 		this.onModelChanged();
 	}
 }

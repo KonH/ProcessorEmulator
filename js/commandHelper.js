@@ -12,7 +12,9 @@ var CommandHelper = (function () {
             new MoveAccHandler(),
             new JumpHandler(),
             new JumpZeroHandler(),
-            new JumpEqualHandler()
+            new JumpEqualHandler(),
+            new LoadHandler(),
+            new SaveHandler()
         ]);
     }
     CommandHelper.prototype.addHandlers = function (handlers) {
