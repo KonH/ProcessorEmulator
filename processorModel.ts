@@ -1,9 +1,13 @@
 class ProcessorModel {
-	program : string;
-	counter : number;
+	static regCount : number = 8;
+	static serviceRegCount : number = 3;
+	static counterSize : number = 4;
+	static regSize : number = 4;
+	static terminatedBit = 0;
+
+	program : BitSet;
 	command : Command;
-	terminated : boolean;
-	registers : number[] = [];
+	registers : BitSet[];
 
 	changedCallback : Function = null;
 
@@ -13,23 +17,55 @@ class ProcessorModel {
 		}
 	}
 
+	constructor() {
+		this.registers = Array(ProcessorModel.regCount);
+	}
+
 	reset() {
-		this.program = "";
-		this.counter = 0;
+		this.program = null;
 		this.command = null;
-		this.registers = [0, 0, 0, 0, 0];
-		this.terminated = true;
+		this.registers.fill(new BitSet(ProcessorModel.regSize));
 		this.onModelChanged();
 	}
 
-	setProgram(program : string) {
+	private getCounterRegIdx() {
+		return 0;
+	}
+
+	private getSystemRegIdx() {
+		return 1;
+	}
+
+	private getAccumRegIdx() {
+		return 2;
+	}
+
+	getCommonRegIdx(index : BitSet) {
+		return index.toNum() + ProcessorModel.serviceRegCount;
+	}
+
+	getCounterRegister() : BitSet {
+		return this.registers[this.getCounterRegIdx()];
+	}
+
+	getSystemRegister() : BitSet {
+		return this.registers[this.getSystemRegIdx()];
+	}
+
+	setProgram(program : BitSet) {
 		this.program = program;
 		this.onModelChanged();
 	}
 
-	readBusData(len : number) : string {
-		let data = this.program.slice(this.counter, this.counter + len);
-		this.counter += len;
+	getTerminatedFlag() : boolean {
+		return this.getSystemRegister().getBit(ProcessorModel.terminatedBit);
+	}
+
+	readBusData(len : number) : BitSet {
+		let counter = this.getCounterRegister();
+		let data = this.program.subset(counter.toNum(), len);
+		let newCounter = counter.addValue(len);
+		this.setCounter(newCounter);
 		this.onModelChanged();
 		return data;
 	}
@@ -40,18 +76,20 @@ class ProcessorModel {
 		this.onModelChanged();
 	}
 
-	setTerminated(value : boolean) {
-		this.terminated = value;
+	setTerminatedFlag(value : boolean) {
+		let idx = this.getSystemRegIdx();
+		let regs = this.registers;
+		regs[idx] = regs[idx].setOneBit(ProcessorModel.terminatedBit, value);
 		this.onModelChanged();
 	}
 
-	setRegister(index : number, value : number) {
+	setRegister(index : number, value : BitSet) {
 		this.registers[index] = value;
 		this.onModelChanged();
 	}
 
-	setCounter(value : number) {
-		this.counter = value;
+	setCounter(value : BitSet) {
+		this.registers[this.getCounterRegIdx()] = value;
 		this.onModelChanged();
 	}
 }

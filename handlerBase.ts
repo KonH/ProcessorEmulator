@@ -7,10 +7,6 @@ abstract class HandlerBase {
 	shortArgs : number = 0;
 	wideArgs : number = 0;
 
-	protected getCommonRegIdx(index : number) {
-		return index + 1;
-	}
-
 	abstract exec(cmd : Command, model : ProcessorModel);
 }
 

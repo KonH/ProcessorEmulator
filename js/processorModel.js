@@ -1,7 +1,7 @@
 var ProcessorModel = (function () {
     function ProcessorModel() {
-        this.registers = [];
         this.changedCallback = null;
+        this.registers = Array(ProcessorModel.regCount);
     }
     ProcessorModel.prototype.onModelChanged = function () {
         if (this.changedCallback != null) {
@@ -9,20 +9,41 @@ var ProcessorModel = (function () {
         }
     };
     ProcessorModel.prototype.reset = function () {
-        this.program = "";
-        this.counter = 0;
+        this.program = null;
         this.command = null;
-        this.registers = [0, 0, 0, 0, 0];
-        this.terminated = true;
+        this.registers.fill(new BitSet(ProcessorModel.regSize));
         this.onModelChanged();
+    };
+    ProcessorModel.prototype.getCounterRegIdx = function () {
+        return 0;
+    };
+    ProcessorModel.prototype.getSystemRegIdx = function () {
+        return 1;
+    };
+    ProcessorModel.prototype.getAccumRegIdx = function () {
+        return 2;
+    };
+    ProcessorModel.prototype.getCommonRegIdx = function (index) {
+        return index.toNum() + ProcessorModel.serviceRegCount;
+    };
+    ProcessorModel.prototype.getCounterRegister = function () {
+        return this.registers[this.getCounterRegIdx()];
+    };
+    ProcessorModel.prototype.getSystemRegister = function () {
+        return this.registers[this.getSystemRegIdx()];
     };
     ProcessorModel.prototype.setProgram = function (program) {
         this.program = program;
         this.onModelChanged();
     };
+    ProcessorModel.prototype.getTerminatedFlag = function () {
+        return this.getSystemRegister().getBit(ProcessorModel.terminatedBit);
+    };
     ProcessorModel.prototype.readBusData = function (len) {
-        var data = this.program.slice(this.counter, this.counter + len);
-        this.counter += len;
+        var counter = this.getCounterRegister();
+        var data = this.program.subset(counter.toNum(), len);
+        var newCounter = counter.addValue(len);
+        this.setCounter(newCounter);
         this.onModelChanged();
         return data;
     };
@@ -31,8 +52,10 @@ var ProcessorModel = (function () {
         this.command = new Command(header);
         this.onModelChanged();
     };
-    ProcessorModel.prototype.setTerminated = function (value) {
-        this.terminated = value;
+    ProcessorModel.prototype.setTerminatedFlag = function (value) {
+        var idx = this.getSystemRegIdx();
+        var regs = this.registers;
+        regs[idx] = regs[idx].setOneBit(ProcessorModel.terminatedBit, value);
         this.onModelChanged();
     };
     ProcessorModel.prototype.setRegister = function (index, value) {
@@ -40,8 +63,13 @@ var ProcessorModel = (function () {
         this.onModelChanged();
     };
     ProcessorModel.prototype.setCounter = function (value) {
-        this.counter = value;
+        this.registers[this.getCounterRegIdx()] = value;
         this.onModelChanged();
     };
+    ProcessorModel.regCount = 8;
+    ProcessorModel.serviceRegCount = 3;
+    ProcessorModel.counterSize = 4;
+    ProcessorModel.regSize = 4;
+    ProcessorModel.terminatedBit = 0;
     return ProcessorModel;
 }());

@@ -39,18 +39,21 @@ class ProcessorController {
 				cleanText += text.charAt(i);
 			}
 		}
-		this.model.setProgram(cleanText);
+		let set = BitSet.fromString(cleanText, cleanText.length);
+		this.model.setProgram(set);
 	}
 
 	private onProcess() {
+		Logger.write("processorController", "onProcess");
 		this.resetModel();
-		this.model.terminated = false;
+		this.model.setTerminatedFlag(false);
 		this.readProgram();
 	}
 
 	private onNext() {
+		Logger.write("processorController", "onNext");
 		this.checkTermination();
-		if (!this.model.terminated) {
+		if (!this.model.getTerminatedFlag()) {
 			this.processCommand();
 		}
 	}
@@ -63,8 +66,11 @@ class ProcessorController {
 
 	private checkTermination() {
 		let model = this.model;
-		if (model.counter + 1 >= model.program.length) {
-			model.setTerminated(true);
+		Logger.write(
+			"processorController", 
+			"checkTermination: " + model.getCounterRegister().toNum() + "/" + model.program.getSize());
+		if (model.getCounterRegister().toNum() + 1 >= model.program.getSize()) {
+			model.setTerminatedFlag(true);
 		}
 	}
 }

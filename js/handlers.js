@@ -19,8 +19,8 @@ var ResetHandler = (function (_super) {
         return _this;
     }
     ResetHandler.prototype.exec = function (cmd, model) {
-        var idx = this.getCommonRegIdx(cmd.args[0]);
-        model.setRegister(idx, 0);
+        var idx = model.getCommonRegIdx(cmd.args[0]);
+        model.setRegister(idx, BitSet.empty(ProcessorModel.regSize));
     };
     return ResetHandler;
 }(HandlerBase));
@@ -35,9 +35,10 @@ var IncHandler = (function (_super) {
         return _this;
     }
     IncHandler.prototype.exec = function (cmd, model) {
-        var index = this.getCommonRegIdx(cmd.args[0]);
+        var index = model.getCommonRegIdx(cmd.args[0]);
         var val = model.registers[index];
-        model.setRegister(index, ++val);
+        var newVal = val.setValue(val.toNum() + 1);
+        model.setRegister(index, newVal);
     };
     return IncHandler;
 }(HandlerBase));
@@ -52,8 +53,8 @@ var MoveHandler = (function (_super) {
         return _this;
     }
     MoveHandler.prototype.exec = function (cmd, model) {
-        var fromIdx = this.getCommonRegIdx(cmd.args[0]);
-        var toIdx = this.getCommonRegIdx(cmd.args[1]);
+        var fromIdx = model.getCommonRegIdx(cmd.args[0]);
+        var toIdx = model.getCommonRegIdx(cmd.args[1]);
         this.commonMove(model, fromIdx, toIdx);
     };
     return MoveHandler;
@@ -68,7 +69,7 @@ var ResetAccHandler = (function (_super) {
         return _this;
     }
     ResetAccHandler.prototype.exec = function (cmd, model) {
-        model.setRegister(HandlerBase.accRegIdx, 0);
+        model.setRegister(HandlerBase.accRegIdx, BitSet.empty(ProcessorModel.regSize));
     };
     return ResetAccHandler;
 }(HandlerBase));
@@ -84,7 +85,8 @@ var IncAccHandler = (function (_super) {
     IncAccHandler.prototype.exec = function (cmd, model) {
         var idx = HandlerBase.accRegIdx;
         var val = model.registers[idx];
-        model.setRegister(idx, ++val);
+        var newVal = val.setValue(val.toNum() + 1);
+        model.setRegister(idx, newVal);
     };
     return IncAccHandler;
 }(HandlerBase));
@@ -99,7 +101,7 @@ var MoveAccHandler = (function (_super) {
         return _this;
     }
     MoveAccHandler.prototype.exec = function (cmd, model) {
-        var fromIdx = this.getCommonRegIdx(cmd.args[0]);
+        var fromIdx = model.getCommonRegIdx(cmd.args[0]);
         this.commonMove(model, fromIdx, HandlerBase.accRegIdx);
     };
     return MoveAccHandler;
@@ -131,8 +133,8 @@ var JumpZeroHandler = (function (_super) {
         return _this;
     }
     JumpZeroHandler.prototype.exec = function (cmd, model) {
-        var idx = this.getCommonRegIdx(cmd.args[0]);
-        var condition = model.registers[idx] == 0;
+        var idx = model.getCommonRegIdx(cmd.args[0]);
+        var condition = model.registers[idx].toNum() == 0;
         if (condition) {
             model.setCounter(cmd.args[1]);
         }
@@ -151,8 +153,8 @@ var JumpEqualHandler = (function (_super) {
         return _this;
     }
     JumpEqualHandler.prototype.exec = function (cmd, model) {
-        var leftIdx = this.getCommonRegIdx(cmd.args[0]);
-        var rightIdx = this.getCommonRegIdx(cmd.args[0]);
+        var leftIdx = model.getCommonRegIdx(cmd.args[0]);
+        var rightIdx = model.getCommonRegIdx(cmd.args[0]);
         var registers = model.registers;
         var condition = registers[leftIdx] == registers[rightIdx];
         if (condition) {

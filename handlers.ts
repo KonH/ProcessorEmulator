@@ -5,8 +5,8 @@ class ResetHandler extends HandlerBase {
 	description = "r[x] = 0";
 
 	exec(cmd : Command, model : ProcessorModel) {
-		let idx = this.getCommonRegIdx(cmd.args[0]);
-		model.setRegister(idx, 0);
+		let idx = model.getCommonRegIdx(cmd.args[0]);
+		model.setRegister(idx, BitSet.empty(ProcessorModel.regSize));
 	}
 }
 
@@ -17,9 +17,10 @@ class IncHandler extends HandlerBase {
 	description = "r[x]++";
 
 	exec(cmd : Command, model : ProcessorModel) {
-		let index = this.getCommonRegIdx(cmd.args[0]);
+		let index = model.getCommonRegIdx(cmd.args[0]);
 		let val = model.registers[index];
-		model.setRegister(index, ++val);
+		let newVal = val.setValue(val.toNum() + 1);
+		model.setRegister(index, newVal);
 	}
 }
 
@@ -30,8 +31,8 @@ class MoveHandler extends MoveHandlerBase {
 	description = "r[y] = r[x]";
 
 	exec(cmd : Command, model : ProcessorModel) {
-		let fromIdx = this.getCommonRegIdx(cmd.args[0]);
-		let toIdx = this.getCommonRegIdx(cmd.args[1]); 
+		let fromIdx = model.getCommonRegIdx(cmd.args[0]);
+		let toIdx = model.getCommonRegIdx(cmd.args[1]); 
 		this.commonMove(model, fromIdx, toIdx);
 	}
 }
@@ -42,7 +43,7 @@ class ResetAccHandler extends HandlerBase {
 	description = "r[0] = 0";
 
 	exec(cmd : Command, model : ProcessorModel) {
-		model.setRegister(HandlerBase.accRegIdx, 0);
+		model.setRegister(HandlerBase.accRegIdx, BitSet.empty(ProcessorModel.regSize));
 	}
 }
 
@@ -54,7 +55,8 @@ class IncAccHandler extends HandlerBase {
 	exec(cmd : Command, model : ProcessorModel) {
 		let idx = HandlerBase.accRegIdx;
 		let val = model.registers[idx];
-		model.setRegister(idx, ++val);
+		let newVal = val.setValue(val.toNum() + 1);
+		model.setRegister(idx, newVal);
 	}
 }
 
@@ -65,7 +67,7 @@ class MoveAccHandler extends MoveHandlerBase {
 	description = "r[0] = r[x]";
 
 	exec(cmd : Command, model : ProcessorModel) {
-		let fromIdx = this.getCommonRegIdx(cmd.args[0]);
+		let fromIdx = model.getCommonRegIdx(cmd.args[0]);
 		this.commonMove(model, fromIdx, HandlerBase.accRegIdx);
 	}
 }
@@ -89,8 +91,8 @@ class JumpZeroHandler extends HandlerBase {
 	description = "go to y if r[x] == 0";
 
 	exec(cmd : Command, model : ProcessorModel) {
-		let idx = this.getCommonRegIdx(cmd.args[0]);
-		let condition = model.registers[idx] == 0;
+		let idx = model.getCommonRegIdx(cmd.args[0]);
+		let condition = model.registers[idx].toNum() == 0;
 		if (condition) {
 			model.setCounter(cmd.args[1]);
 		}
@@ -105,8 +107,8 @@ class JumpEqualHandler extends HandlerBase {
 	description = "go to z if r[x] == r[y]";
 
 	exec(cmd : Command, model : ProcessorModel) {
-		let leftIdx = this.getCommonRegIdx(cmd.args[0]);
-		let rightIdx = this.getCommonRegIdx(cmd.args[0]);
+		let leftIdx = model.getCommonRegIdx(cmd.args[0]);
+		let rightIdx = model.getCommonRegIdx(cmd.args[0]);
 		let registers = model.registers;
 		let condition = registers[leftIdx] == registers[rightIdx];
 		if (condition) {

@@ -13,9 +13,6 @@ var HandlerBase = (function () {
         this.shortArgs = 0;
         this.wideArgs = 0;
     }
-    HandlerBase.prototype.getCommonRegIdx = function (index) {
-        return index + 1;
-    };
     HandlerBase.accRegIdx = 0;
     return HandlerBase;
 }());

@@ -28,7 +28,7 @@ class ProcessorView {
 
 	private formatProgram() : string {
 		let program = this.model.program;
-		return program.length == 0 ? "none" : program;
+		return program == null ? "none" : program.toString();
 	}
 
 	private formatCommand() : string {
@@ -36,16 +36,24 @@ class ProcessorView {
 		if (cmd == null) {
 			return "none";
 		}
-		return cmd.format();
+		return cmd.toString();
+	}
+
+	private formatCounter() {
+		let counter = model.getCounterRegister();
+		if (counter == null) {
+			return "none";
+		}
+		return counter.toString() + " (" + counter.toNum().toString() + ")";
 	}
 
 	private write() {
 		let model = this.model;
 		this.addElement("Program", this.formatProgram());
 		this.addElement("Current", this.formatCommand());
-		this.addElement("Counter", model.counter.toString());
-		this.addElement("Terminated", model.terminated.toString());
+		this.addElement("Counter", this.formatCounter());
+		this.addElement("Terminated", model.getTerminatedFlag().toString());
 		model.registers.forEach((value, index) =>
-			this.addElement("R" + index, value.toString(2)));
+			this.addElement("R" + index, value.toString()));
 	}
 }

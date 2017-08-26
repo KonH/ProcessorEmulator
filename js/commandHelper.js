@@ -55,7 +55,7 @@ var CommandHelper = (function () {
     };
     CommandHelper.prototype.execCommand = function (command) {
         var header = command.header;
-        var handler = this.findHandlerByHeader(header);
+        var handler = this.findHandlerByHeader(header.toNum());
         if (handler != null) {
             this.prepare(command, handler.name, handler.shortArgs, handler.wideArgs);
             handler.exec(command, model);
