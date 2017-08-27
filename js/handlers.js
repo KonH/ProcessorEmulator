@@ -249,7 +249,7 @@ var PutHandler = (function (_super) {
     __extends(PutHandler, _super);
     function PutHandler() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.header = 15;
+        _this.header = 16;
         _this.name = "PUT";
         _this.shortArgs = 1;
         _this.wideArgs = 1;
@@ -265,7 +265,7 @@ var AddAccHandler = (function (_super) {
     __extends(AddAccHandler, _super);
     function AddAccHandler() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.header = 16;
+        _this.header = 17;
         _this.name = "ADDA";
         _this.shortArgs = 1;
         _this.description = "add r[x] to a";
@@ -282,7 +282,7 @@ var AccMoveHandler = (function (_super) {
     __extends(AccMoveHandler, _super);
     function AccMoveHandler() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.header = 17;
+        _this.header = 18;
         _this.name = "AMOV";
         _this.shortArgs = 1;
         _this.description = "r[x] = a";
@@ -298,7 +298,7 @@ var LoadByAccRegHandler = (function (_super) {
     __extends(LoadByAccRegHandler, _super);
     function LoadByAccRegHandler() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.header = 18;
+        _this.header = 19;
         _this.name = "LDRA";
         _this.shortArgs = 1;
         _this.description = "load mem from a to r[x]";
@@ -316,7 +316,7 @@ var SaveByAccRegHandler = (function (_super) {
     __extends(SaveByAccRegHandler, _super);
     function SaveByAccRegHandler() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.header = 19;
+        _this.header = 20;
         _this.name = "SVRA";
         _this.shortArgs = 1;
         _this.description = "save r[x] to mem at a";

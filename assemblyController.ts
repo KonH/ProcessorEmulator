@@ -200,7 +200,7 @@ class AssemblyController {
 			machineCode += this.toProperCodeString(holder.getHeader(), Setup.headerSize);
 			machineCode += " ";
 			machineCode += this.convertArgs(holder.argHolders);
-			machineCode += "  ";
+			machineCode += "\n";
 		});
 		return machineCode;
 	}

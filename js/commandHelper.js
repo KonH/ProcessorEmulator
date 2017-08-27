@@ -30,6 +30,9 @@ var CommandHelper = (function () {
         handlers.forEach(function (handler) { return _this.addHandler(handler); });
     };
     CommandHelper.prototype.addHandler = function (handler) {
+        if (this.handlersByHeader.has(handler.header)) {
+            throw "Duplicate command (" + handler.header.toString(2) + ")!";
+        }
         this.handlersByHeader.set(handler.header, handler);
         this.handlersByName.set(handler.name.toLowerCase(), handler);
     };

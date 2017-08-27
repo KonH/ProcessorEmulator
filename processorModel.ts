@@ -83,7 +83,9 @@ class ProcessorModel {
 		let counter = this.getCounterRegister();
 		let data = this.program.subset(counter.toNum(), len);
 		let newCounter = counter.addValue(len);
-		Logger.write("processorModel", "readBusData: counter: " + counter + " => " + newCounter);
+		Logger.write("processorModel", 
+			"readBusData: counter: " + counter.toStringComplex() + 
+			" => " + newCounter.toStringComplex());
 		this.setCounter(newCounter);
 		this.onModelChanged();
 		return data;
@@ -113,19 +115,19 @@ class ProcessorModel {
 	}
 
 	private setRegister(index : number, value : BitSet) {
-		Logger.write("processorModel", "setRegister: " + index + ": " + value.toString())
+		Logger.write("processorModel", "setRegister: " + index + ": " + value.toStringComplex())
 		this.registers[index] = value;
 		this.onModelChanged();
 	}
 
 	setCounter(value : BitSet) {
-		Logger.write("processorModel", "setCounter: " + value.toString())
+		Logger.write("processorModel", "setCounter: " + value.toStringComplex())
 		this.registers[this.getCounterRegIdx()] = value;
 		this.onModelChanged();
 	}
 
 	setMemory(address : BitSet, content : BitSet) {
-		Logger.write("processorModel", "setMemory: at " + address.toString() + ": " + content.toString());
+		Logger.write("processorModel", "setMemory: at " + address.toStringComplex() + ": " + content.toStringComplex());
 		this.memory = this.memory.setBits(address.toNum(), content);
 		this.onModelChanged();
 	}

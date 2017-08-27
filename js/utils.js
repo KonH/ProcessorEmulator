@@ -21,6 +21,20 @@ var BitSet = (function () {
         this.values.forEach(function (item) { return str += item ? "1" : "0"; });
         return str;
     };
+    BitSet.prototype.toStringLines = function (lineLen) {
+        var str = "";
+        var values = this.values;
+        for (var i = 0; i < values.length; i++) {
+            if ((i > 0) && (i % lineLen == 0)) {
+                str += "\n";
+            }
+            str += values[i] ? "1" : "0";
+        }
+        return str;
+    };
+    BitSet.prototype.toStringComplex = function () {
+        return this.toString() + " (" + this.toNum() + ")";
+    };
     BitSet.prototype.toNum = function () {
         var num = 0;
         var values = this.values;

@@ -181,7 +181,7 @@ class AddHandler extends HandlerBase {
 }
 
 class PutHandler extends HandlerBase {
-	header = 0b01111;
+	header = 0b10000;
 	name = "PUT";
 	shortArgs = 1;
 	wideArgs = 1;
@@ -193,7 +193,7 @@ class PutHandler extends HandlerBase {
 }
 
 class AddAccHandler extends HandlerBase {
-	header = 0b10000;
+	header = 0b10001;
 	name = "ADDA";
 	shortArgs = 1;
 	description = "add r[x] to a";
@@ -208,7 +208,7 @@ class AddAccHandler extends HandlerBase {
 }
 
 class AccMoveHandler extends HandlerBase {
-	header = 0b10001;
+	header = 0b10010;
 	name = "AMOV";
 	shortArgs = 1;
 	description = "r[x] = a";
@@ -220,7 +220,7 @@ class AccMoveHandler extends HandlerBase {
 }
 
 class LoadByAccRegHandler extends HandlerBase {
-	header = 0b10010;
+	header = 0b10011;
 	name = "LDRA";
 	shortArgs = 1;
 	description = "load mem from a to r[x]";
@@ -234,7 +234,7 @@ class LoadByAccRegHandler extends HandlerBase {
 }
 
 class SaveByAccRegHandler extends HandlerBase {
-	header = 0b10011;
+	header = 0b10100;
 	name = "SVRA";
 	shortArgs = 1;
 	description = "save r[x] to mem at a";

@@ -41,7 +41,7 @@ class ProcessorView {
 		this.addElement("Current", this.formatCommand());
 		this.addElement("Terminated", model.getTerminatedFlag().toString());
 		model.getRegisters().forEach((value, index) =>
-			this.addElement("R" + index, value.toString() + " (" + value.toNum() + ")"));
-		this.memoryInput.value = model.getAllMemory().toString();
+			this.addElement("R" + index, value.toStringComplex()));
+		this.memoryInput.value = model.getAllMemory().toStringLines(Setup.regSize);
 	}
 }

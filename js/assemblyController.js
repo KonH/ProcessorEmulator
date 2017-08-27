@@ -171,7 +171,7 @@ var AssemblyController = (function () {
             machineCode += _this.toProperCodeString(holder.getHeader(), Setup.headerSize);
             machineCode += " ";
             machineCode += _this.convertArgs(holder.argHolders);
-            machineCode += "  ";
+            machineCode += "\n";
         });
         return machineCode;
     };

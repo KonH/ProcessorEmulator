@@ -61,7 +61,8 @@ var ProcessorModel = (function () {
         var counter = this.getCounterRegister();
         var data = this.program.subset(counter.toNum(), len);
         var newCounter = counter.addValue(len);
-        Logger.write("processorModel", "readBusData: counter: " + counter + " => " + newCounter);
+        Logger.write("processorModel", "readBusData: counter: " + counter.toStringComplex() +
+            " => " + newCounter.toStringComplex());
         this.setCounter(newCounter);
         this.onModelChanged();
         return data;
@@ -86,17 +87,17 @@ var ProcessorModel = (function () {
         this.setRegister(accRegIdx, value);
     };
     ProcessorModel.prototype.setRegister = function (index, value) {
-        Logger.write("processorModel", "setRegister: " + index + ": " + value.toString());
+        Logger.write("processorModel", "setRegister: " + index + ": " + value.toStringComplex());
         this.registers[index] = value;
         this.onModelChanged();
     };
     ProcessorModel.prototype.setCounter = function (value) {
-        Logger.write("processorModel", "setCounter: " + value.toString());
+        Logger.write("processorModel", "setCounter: " + value.toStringComplex());
         this.registers[this.getCounterRegIdx()] = value;
         this.onModelChanged();
     };
     ProcessorModel.prototype.setMemory = function (address, content) {
-        Logger.write("processorModel", "setMemory: at " + address.toString() + ": " + content.toString());
+        Logger.write("processorModel", "setMemory: at " + address.toStringComplex() + ": " + content.toStringComplex());
         this.memory = this.memory.setBits(address.toNum(), content);
         this.onModelChanged();
     };

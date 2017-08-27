@@ -34,9 +34,9 @@ var ProcessorView = (function () {
         this.addElement("Current", this.formatCommand());
         this.addElement("Terminated", model.getTerminatedFlag().toString());
         model.getRegisters().forEach(function (value, index) {
-            return _this.addElement("R" + index, value.toString() + " (" + value.toNum() + ")");
+            return _this.addElement("R" + index, value.toStringComplex());
         });
-        this.memoryInput.value = model.getAllMemory().toString();
+        this.memoryInput.value = model.getAllMemory().toStringLines(Setup.regSize);
     };
     return ProcessorView;
 }());

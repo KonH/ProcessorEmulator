@@ -22,6 +22,22 @@ class BitSet {
 		return str;
 	}
 
+	toStringLines(lineLen : number) : string {
+		let str = "";
+		let values = this.values;
+		for (var i = 0; i < values.length; i++) {
+			if ((i > 0) && (i % lineLen == 0)) {
+				str += "\n";
+			}
+			str += values[i] ? "1" : "0";
+		}
+		return str;
+	}
+
+	toStringComplex() : string {
+		return this.toString() + " (" + this.toNum() + ")";
+	}
+
 	toNum() : number {
 		let num = 0;
 		let values = this.values;
