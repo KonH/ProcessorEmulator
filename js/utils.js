@@ -52,7 +52,11 @@ var BitSet = (function () {
         return this.values[index];
     };
     BitSet.prototype.clone = function () {
-        return BitSet.fromNum(this.toNum(), this.getSize());
+        var newSet = new BitSet(this.getSize());
+        for (var i = 0; i < this.values.length; i++) {
+            newSet.values[i] = this.values[i];
+        }
+        return newSet;
     };
     BitSet.prototype.subset = function (start, len) {
         Logger.write("BitSet", "subset: " + start + ":" + len + " (" + this.getSize() + ")");

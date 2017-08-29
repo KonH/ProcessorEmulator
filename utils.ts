@@ -58,7 +58,11 @@ class BitSet {
 	}
 
 	private clone() : BitSet {
-		return BitSet.fromNum(this.toNum(), this.getSize());
+		let newSet = new BitSet(this.getSize());
+		for (var i = 0; i < this.values.length; i++) {
+			newSet.values[i] = this.values[i];
+		}
+		return newSet;
 	}
 
 	subset(start : number, len : number) : BitSet {
