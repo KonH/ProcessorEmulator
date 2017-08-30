@@ -26,13 +26,4 @@ class SaveController {
 		Logger.write("SaveController", "Save: '" + name + "': '" + content + "'");
 		this.model.save(name, content);
 	}
-
-	onLoad(name : string) {
-		let content = this.model.load(name);
-		this.assembly.setAssemblyText(content);
-	}
-
-	onRemove(name : string) {
-		this.model.remove(name);
-	}
 }

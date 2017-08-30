@@ -2,6 +2,7 @@ var SaveModel = (function () {
     function SaveModel() {
         this.saveName = "saves";
         this.saves = new Map();
+        this.currentSave = null;
         this.changedCallback = null;
     }
     SaveModel.prototype.onModelUpdated = function () {

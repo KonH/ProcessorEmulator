@@ -18,4 +18,4 @@ var saveNameInput = document.getElementById("saveName");
 var saveButton = document.getElementById("saveBtn");
 var saveController = new SaveController(save, assemblyController, saveNameInput, saveButton);
 var saveRoot = document.getElementById("saveContent");
-var saveView = new SaveView(save, saveController, saveRoot);
+var saveView = new SaveView(save, assemblyController, saveRoot);

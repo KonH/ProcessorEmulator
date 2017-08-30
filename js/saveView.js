@@ -1,8 +1,8 @@
 var SaveView = (function () {
-    function SaveView(model, controller, node) {
+    function SaveView(model, assembly, node) {
         var _this = this;
         this.model = model;
-        this.controller = controller;
+        this.assembly = assembly;
         this.model.changedCallback = function () { return _this.onModelChanged(); };
         this.node = node;
         this.onModelChanged();
@@ -14,18 +14,24 @@ var SaveView = (function () {
         saves.forEach(function (value, key) {
             var item = document.createElement("li");
             var name = document.createElement("a");
-            name.innerText = key;
+            name.innerText = key + " ";
             var loadButton = document.createElement("button");
-            loadButton.onclick = function () { return _this.controller.onLoad(key); };
+            loadButton.onclick = function () { return _this.processLoad(key); };
             loadButton.innerText = "Load";
             var removeButton = document.createElement("button");
-            removeButton.onclick = function () { return _this.controller.onRemove(key); };
+            removeButton.onclick = function () { return _this.model.remove(key); };
             removeButton.innerText = "Remove";
             item.appendChild(name);
             item.appendChild(loadButton);
             item.appendChild(removeButton);
             _this.node.appendChild(item);
         });
+    };
+    SaveView.prototype.processLoad = function (key) {
+        var content = this.model.load(key);
+        if (content != null) {
+            this.assembly.setAssemblyText(content);
+        }
     };
     return SaveView;
 }());

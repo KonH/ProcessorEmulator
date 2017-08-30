@@ -1,7 +1,8 @@
 class SaveModel {
 	private saveName = "saves";
 	private saves:Map<string, string> = new Map<string, string>();
-
+	
+	currentSave : string = null;
 	changedCallback : Function = null;
 
 	private onModelUpdated() {
