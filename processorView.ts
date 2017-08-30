@@ -17,9 +17,7 @@ class ProcessorView {
 
 	private clear() {
 		let node = this.node;
-		while (node.firstChild) {
-			node.removeChild(node.firstChild);
-		}
+		Utils.clearChilds(node);
 	}
 
 	private addElement(name : string, value : string) {

@@ -38,6 +38,12 @@ var AssemblyController = (function () {
         this.generateButton.onclick = function () { return _this.generateMachineCode(_this.assemblyInput.value); };
         this.helper = helper;
     }
+    AssemblyController.prototype.getAssemblyText = function () {
+        return this.assemblyInput.value;
+    };
+    AssemblyController.prototype.setAssemblyText = function (text) {
+        this.assemblyInput.value = text;
+    };
     AssemblyController.prototype.generateMachineCode = function (assemblyCode) {
         var lines = assemblyCode.split('\n');
         this.holders = this.createHolders(lines);

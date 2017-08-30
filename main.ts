@@ -18,3 +18,10 @@ var process = <HTMLButtonElement>document.getElementById("processBtn");
 var next = <HTMLButtonElement>document.getElementById("nextBtn");
 var auto = <HTMLButtonElement>document.getElementById("autoBtn");
 var procController = new ProcessorController(model, helper, machineCode, memInput, process, next, auto);
+
+var save = new SaveModel();
+var saveNameInput = <HTMLInputElement>document.getElementById("saveName");
+var saveButton = <HTMLButtonElement>document.getElementById("saveBtn");
+var saveController = new SaveController(save, assemblyController, saveNameInput, saveButton);
+var saveRoot = document.getElementById("saveContent");
+var saveView = new SaveView(save, saveController, saveRoot);

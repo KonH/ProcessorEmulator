@@ -11,6 +11,16 @@ var Setup = (function () {
     Setup.memorySize = 256;
     return Setup;
 }());
+var Utils = (function () {
+    function Utils() {
+    }
+    Utils.clearChilds = function (node) {
+        while (node.firstChild) {
+            node.removeChild(node.firstChild);
+        }
+    };
+    return Utils;
+}());
 var BitSet = (function () {
     function BitSet(size) {
         this.values = [];

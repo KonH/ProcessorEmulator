@@ -12,9 +12,7 @@ var ProcessorView = (function () {
     };
     ProcessorView.prototype.clear = function () {
         var node = this.node;
-        while (node.firstChild) {
-            node.removeChild(node.firstChild);
-        }
+        Utils.clearChilds(node);
     };
     ProcessorView.prototype.addElement = function (name, value) {
         var childNode = document.createElement("li");

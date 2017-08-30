@@ -58,6 +58,14 @@ class AssemblyController {
 		this.helper = helper;
 	}
 
+	getAssemblyText() {
+		return this.assemblyInput.value;
+	}
+
+	setAssemblyText(text : string) {
+		this.assemblyInput.value = text;
+	}
+
 	private generateMachineCode(assemblyCode : string) {
 		let lines = assemblyCode.split('\n');
 		this.holders = this.createHolders(lines);

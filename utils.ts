@@ -9,6 +9,14 @@ class Setup {
 	static memorySize = 256;
 }
 
+class Utils {
+	static clearChilds(node : HTMLElement) {
+		while (node.firstChild) {
+			node.removeChild(node.firstChild);
+		}
+	}
+}
+
 class BitSet {
 	private values:boolean[] = [];
 

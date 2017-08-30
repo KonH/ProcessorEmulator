@@ -8,6 +8,12 @@
 			<h2>Assembly Code:</h2>
 			<p><textarea id="assemblyInput" rows="24"></textarea></p>
 			<p><button id="convertBtn">Convert</button></p>
+			<h2>Saves:</h2>
+			<ul id="saveContent"></ul>
+			<p>
+				Current:
+				<input id="saveName"></input>
+				<button id="saveBtn">Save</button></p>
 		</div>
 		<div class="container">
 			<h2>Machine Code:</h2>
@@ -15,7 +21,8 @@
 			<p>
 				<button id="processBtn">Process</button>
 				<button id="nextBtn">Next</button>
-				<button id="autoBtn">Auto</button></p>
+				<button id="autoBtn">Auto</button>
+			</p>
 		</div>
 		<div class="container">
 			<h2>State:</h2>
@@ -60,6 +67,9 @@
 		<script type="text/javascript" src="js/helpView.js"></script>
 		<script type="text/javascript" src="js/processorView.js"></script>
 		<script type="text/javascript" src="js/processorController.js"></script>
+		<script type="text/javascript" src="js/saveModel.js"></script>
+		<script type="text/javascript" src="js/saveController.js"></script>
+		<script type="text/javascript" src="js/saveView.js"></script>
 		<script type="text/javascript" src="js/main.js"></script>
 	</body>
 </html>
