@@ -1,27 +1,27 @@
 var model = new ProcessorModel();
 
 var stateNode = document.getElementById("state");
-var memInput = <HTMLTextAreaElement>document.getElementById("memoryInput");
+var memInput = Utils.getTextArea("memoryInput");
 var view = new ProcessorView(stateNode, memInput, model);
 
 var helper = new CommandHelper(model);
 
-var table = <HTMLTableElement>document.getElementById("commandHelp");
+var table = Utils.getTable("commandHelp");
 var helpView = new HelpView(table, helper);
 
-var assemblyCode = <HTMLTextAreaElement>document.getElementById("assemblyInput");
-var machineCode = <HTMLTextAreaElement>document.getElementById("machineInput");
-var convert = <HTMLButtonElement>document.getElementById("convertBtn");
+var assemblyCode = Utils.getTextArea("assemblyInput");
+var machineCode = Utils.getTextArea("machineInput");
+var convert = Utils.getButton("convertBtn");
 var assemblyController = new AssemblyController(assemblyCode, machineCode, convert, helper);
 
-var process = <HTMLButtonElement>document.getElementById("processBtn");
-var next = <HTMLButtonElement>document.getElementById("nextBtn");
-var auto = <HTMLButtonElement>document.getElementById("autoBtn");
+var process = Utils.getButton("processBtn");
+var next = Utils.getButton("nextBtn");
+var auto = Utils.getButton("autoBtn");
 var procController = new ProcessorController(model, helper, machineCode, memInput, process, next, auto);
 
 var save = new SaveModel();
-var saveNameInput = <HTMLInputElement>document.getElementById("saveName");
-var saveButton = <HTMLButtonElement>document.getElementById("saveBtn");
+var saveNameInput = Utils.getInput("saveName");
+var saveButton = Utils.getButton("saveBtn");
 var saveController = new SaveController(save, assemblyController, saveNameInput, saveButton);
 var saveRoot = document.getElementById("saveContent");
 var saveView = new SaveView(save, assemblyController, saveRoot);

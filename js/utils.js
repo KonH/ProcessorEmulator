@@ -14,6 +14,18 @@ var Setup = (function () {
 var Utils = (function () {
     function Utils() {
     }
+    Utils.getTextArea = function (id) {
+        return document.getElementById(id);
+    };
+    Utils.getTable = function (id) {
+        return document.getElementById(id);
+    };
+    Utils.getButton = function (id) {
+        return document.getElementById(id);
+    };
+    Utils.getInput = function (id) {
+        return document.getElementById(id);
+    };
     Utils.clearChilds = function (node) {
         while (node.firstChild) {
             node.removeChild(node.firstChild);

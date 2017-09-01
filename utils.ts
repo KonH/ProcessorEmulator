@@ -10,6 +10,22 @@ class Setup {
 }
 
 class Utils {
+	static getTextArea(id : string) : HTMLTextAreaElement {
+		return <HTMLTextAreaElement>document.getElementById(id);
+	}
+
+	static getTable(id : string) : HTMLTableElement {
+		return <HTMLTableElement>document.getElementById(id);
+	}
+
+	static getButton(id : string) : HTMLButtonElement {
+		return <HTMLButtonElement>document.getElementById(id);
+	}
+
+	static getInput(id : string) : HTMLInputElement {
+		return <HTMLInputElement>document.getElementById(id);
+	}
+
 	static clearChilds(node : HTMLElement) {
 		while (node.firstChild) {
 			node.removeChild(node.firstChild);
