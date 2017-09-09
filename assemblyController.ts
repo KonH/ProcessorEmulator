@@ -184,18 +184,14 @@ class AssemblyController {
 		}
 	}
 
-	private toProperCodeString(value : number, len : number) : string {
-		let str = value.toString(2);
-		while (str.length < len) {
-			str = "0" + str;
-		}
-		return str;
+	private toProperCodeString(signed : boolean, value : number, len : number) : string {
+		return BitSet.fromNum(signed, value, len).toString();
 	}
 
 	private convertArgs(args : ArgHolder[]) : string {
 		let str = "";
 		args.forEach(arg => {
-			let argValue = this.toProperCodeString(arg.readyValue, arg.size);
+			let argValue = this.toProperCodeString(true, arg.readyValue, arg.size);
 			argValue += " ";
 			str += argValue;
 		});
@@ -205,7 +201,7 @@ class AssemblyController {
 	private getMachineCode(holders : AssemblyHolder[]) : string {
 		let machineCode = "";
 		holders.forEach(holder => {
-			machineCode += this.toProperCodeString(holder.getHeader(), Setup.headerSize);
+			machineCode += this.toProperCodeString(false, holder.getHeader(), Setup.headerSize);
 			machineCode += " ";
 			machineCode += this.convertArgs(holder.argHolders);
 			machineCode += "\n";

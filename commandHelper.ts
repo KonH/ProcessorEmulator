@@ -41,12 +41,12 @@ class CommandHelper {
 	}
 
 	private loadCommandDataWide(command : Command, count : number) {
-		let data = this.model.readBusData(count * Setup.wideArgSize);
+		let data = this.model.readBusData(true, count * Setup.wideArgSize);
 		command.loadWideArgs(data, count);
 	}
 
 	private loadCommandDataShort(command : Command, count : number) {
-		let data = this.model.readBusData(count * Setup.shortArgSize);
+		let data = this.model.readBusData(true, count * Setup.shortArgSize);
 		command.loadShortArgs(data, count);
 	}
 

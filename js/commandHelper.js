@@ -37,11 +37,11 @@ var CommandHelper = (function () {
         this.handlersByName.set(handler.name.toLowerCase(), handler);
     };
     CommandHelper.prototype.loadCommandDataWide = function (command, count) {
-        var data = this.model.readBusData(count * Setup.wideArgSize);
+        var data = this.model.readBusData(true, count * Setup.wideArgSize);
         command.loadWideArgs(data, count);
     };
     CommandHelper.prototype.loadCommandDataShort = function (command, count) {
-        var data = this.model.readBusData(count * Setup.shortArgSize);
+        var data = this.model.readBusData(true, count * Setup.shortArgSize);
         command.loadShortArgs(data, count);
     };
     CommandHelper.prototype.prepare = function (command, name, shortArgs, wideArgs) {

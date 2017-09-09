@@ -5,7 +5,7 @@ class ResetHandler extends HandlerBase {
 	description = "r[x] = 0";
 
 	exec(cmd : Command, model : ProcessorModel) {
-		model.setCommonRegister(cmd.args[0], BitSet.empty(Setup.regSize));
+		model.setCommonRegister(cmd.args[0], BitSet.empty(true, Setup.regSize));
 	}
 }
 
@@ -40,7 +40,7 @@ class ResetAccHandler extends HandlerBase {
 	description = "a = 0";
 
 	exec(cmd : Command, model : ProcessorModel) {
-		model.setAccumRegister(BitSet.empty(Setup.regSize));
+		model.setAccumRegister(BitSet.empty(true, Setup.regSize));
 	}
 }
 
@@ -120,7 +120,7 @@ class LoadHandler extends HandlerBase {
 	exec(cmd : Command, model : ProcessorModel) {
 		let addr = cmd.args[1];
 		let len = Setup.regSize;
-		let result = model.getMemory(addr, len);
+		let result = model.getMemory(true, addr, len);
 		model.setCommonRegister(cmd.args[0], result);
 	}
 }
@@ -148,7 +148,7 @@ class LoadByRegHandler extends HandlerBase {
 	exec(cmd : Command, model : ProcessorModel) {
 		let addr = cmd.args[1];
 		let len = Setup.regSize;
-		let result = model.getMemory(addr, len);
+		let result = model.getMemory(true, addr, len);
 		model.setCommonRegister(cmd.args[0], result);
 	}
 }
@@ -175,7 +175,7 @@ class AddHandler extends HandlerBase {
 	exec(cmd : Command, model : ProcessorModel) {
 		let sendValue = model.getCommonRegister(cmd.args[0]);
 		let recValue = model.getCommonRegister(cmd.args[1]);
-		let newVal = BitSet.fromNum(sendValue.toNum() + recValue.toNum(), Setup.regSize);
+		let newVal = BitSet.fromNum(true, sendValue.toNum() + recValue.toNum(), Setup.regSize);
 		model.setCommonRegister(cmd.args[1], newVal);
 	}
 }
@@ -200,6 +200,7 @@ class AddAccHandler extends HandlerBase {
 
 	exec(cmd : Command, model : ProcessorModel) {
 		let newVal = BitSet.fromNum(
+			true,
 			model.getAccumRegister().toNum() + 
 			model.getCommonRegister(cmd.args[0]).toNum(),
 			Setup.regSize);
@@ -228,7 +229,7 @@ class LoadByAccRegHandler extends HandlerBase {
 	exec(cmd : Command, model : ProcessorModel) {
 		let addr = model.getAccumRegister();
 		let len = Setup.regSize;
-		let result = model.getMemory(addr, len);
+		let result = model.getMemory(true, addr, len);
 		model.setCommonRegister(cmd.args[0], result);
 	}
 }

@@ -19,8 +19,8 @@ class ProcessorModel {
 	reset() {
 		this.program = null;
 		this.command = null;
-		this.registers.fill(new BitSet(Setup.regSize));
-		this.memory = new BitSet(Setup.memorySize);
+		this.registers.fill(new BitSet(true, Setup.regSize));
+		this.memory = new BitSet(false, Setup.memorySize);
 		this.onModelChanged();
 	}
 
@@ -71,17 +71,17 @@ class ProcessorModel {
 		return this.registers;
 	}
 
-	getMemory(address : BitSet, len : number) : BitSet {
-		return this.memory.subset(address.toNum(), len);
+	getMemory(signed : boolean, address : BitSet, len : number) : BitSet {
+		return this.memory.subset(signed, address.toNum(), len);
 	}
 
 	getAllMemory() : BitSet {
 		return this.memory;
 	}
 
-	readBusData(len : number) : BitSet {
+	readBusData(signed : boolean, len : number) : BitSet {
 		let counter = this.getCounterRegister();
-		let data = this.program.subset(counter.toNum(), len);
+		let data = this.program.subset(signed, counter.toNum(), len);
 		let newCounter = counter.addValue(len);
 		Logger.write("processorModel", 
 			"readBusData: counter: " + counter.toStringComplex() + 
@@ -92,7 +92,7 @@ class ProcessorModel {
 	}
 
 	updateCommand() {
-		let header = this.readBusData(Setup.headerSize);
+		let header = this.readBusData(false, Setup.headerSize);
 		this.command = new Command(header);
 		this.onModelChanged();
 	}
@@ -115,7 +115,7 @@ class ProcessorModel {
 	}
 
 	private setRegister(index : number, value : BitSet) {
-		Logger.write("processorModel", "setRegister: " + index + ": " + value.toStringComplex())
+		Logger.write("processorModel", "setRegister [" + index + "]: " + value.toStringComplex())
 		this.registers[index] = value;
 		this.onModelChanged();
 	}

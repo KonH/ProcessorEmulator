@@ -47,7 +47,7 @@ class ProcessorController {
 				cleanText += text.charAt(i);
 			}
 		}
-		let set = BitSet.fromString(cleanText, cleanText.length);
+		let set = BitSet.fromString(false, cleanText, cleanText.length);
 		this.model.setProgram(set);
 	}
 
@@ -59,6 +59,9 @@ class ProcessorController {
 	}
 
 	private onNext() {
+		if (this.model.program == null) {
+			return;
+		}
 		Logger.write("processorController", "onNext");
 		this.checkTermination();
 		if (!this.model.getTerminatedFlag()) {

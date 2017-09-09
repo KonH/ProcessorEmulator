@@ -1,12 +1,12 @@
 class Setup {
 	static headerSize = 5;
-	static shortArgSize = 2;
+	static shortArgSize = 3;
 	static wideArgSize = 8;
 	static regCount = 8;
 	static serviceRegCount = 3;
 	static regSize = 8;
 	static terminatedBit = 0;
-	static memorySize = 256;
+	static memorySize = 128;
 }
 
 class Utils {
@@ -34,9 +34,11 @@ class Utils {
 }
 
 class BitSet {
+	private signed:boolean = false;
 	private values:boolean[] = [];
 
-	constructor(size : number) {
+	constructor(signed : boolean, size : number) {
+		this.signed = signed;
 		this.values = Array(size).fill(false);
 	}
 
@@ -59,18 +61,31 @@ class BitSet {
 	}
 
 	toStringComplex() : string {
-		return this.toString() + " (" + this.toNum() + ")";
+		return (this.signed ? "(S) " : "(U) ") + this.toString() + " (" + this.toNum() + ")";
+	}
+
+	inverseBits(values : boolean[]) : boolean[] {
+		let inversedValues = [];
+		values.forEach((value, index) => {
+			inversedValues.push(!values[index])
+		});
+		return inversedValues;
 	}
 
 	toNum() : number {
 		let num = 0;
-		let values = this.values;
+		let values = this.signed ? this.values.slice(1) : this.values;
+		let negative = false;
+		if (this.signed && this.values[0]) {
+			values = this.inverseBits(values);
+			negative = true;
+		}
 		for (var i = 0; i < values.length; i++) {
 			if (values[values.length - i - 1]) { 
 				num += Math.pow(2, i);
 			}
 		}
-		return num;
+		return negative ? -num : num;
 	}
 
 	getSize() : number {
@@ -82,16 +97,16 @@ class BitSet {
 	}
 
 	private clone() : BitSet {
-		let newSet = new BitSet(this.getSize());
+		let newSet = new BitSet(this.signed, this.getSize());
 		for (var i = 0; i < this.values.length; i++) {
 			newSet.values[i] = this.values[i];
 		}
 		return newSet;
 	}
 
-	subset(start : number, len : number) : BitSet {
+	subset(signed : boolean, start : number, len : number) : BitSet {
 		Logger.write("BitSet", "subset: " + start + ":" + len + " (" + this.getSize() + ")");
-		let set = new BitSet(len);
+		let set = new BitSet(signed, len);
 		for (var i = start; i < start + len; i++) {
 			set.values[i - start] = this.values[i];
 		}
@@ -100,7 +115,8 @@ class BitSet {
 
 	setValue(value : number) : BitSet {
 		let len = this.values.length;
-		return BitSet.fromString(value.toString(2), len);
+		let safeStr = BitSet.getSafeStr(this.signed, value, len);
+		return BitSet.fromString(this.signed, safeStr, len);
 	}
 
 	setOneBit(index : number, value : boolean) : BitSet {
@@ -119,7 +135,7 @@ class BitSet {
 
 	addValue(value : number) : BitSet {
 		let newValue = this.toNum() + value;
-		return BitSet.fromNum(newValue, this.getSize());
+		return BitSet.fromNum(this.signed, newValue, this.getSize());
 	}
 
 	private static setValuesFromString(str : string, values : boolean[]) {
@@ -128,23 +144,54 @@ class BitSet {
 		}
 	}
 
-	static fromString(str : string, size : number) : BitSet {
-		while (str.length > size) {
-			str = str.substr(1);
+	static fromString(signed : boolean, str : string, size : number) : BitSet {
+		if (str.length != size) {
+			throw "Wrong size: expected: " + size + ", got " + str.length;
 		}
-		while (str.length < size) {
-			str = "0" + str;
-		}
-		let set = new BitSet(str.length);
+		let set = new BitSet(signed, str.length);
 		BitSet.setValuesFromString(str, set.values);
 		return set;
 	}
 
-	static fromNum(num : number, size : number) : BitSet {
-		return BitSet.fromString(num.toString(2), size);
+	private static inverseStr(str : string) : string {
+		let inversedStr = "";
+		for (var i = 0; i < str.length; i++) {
+			inversedStr += str[i] == "0" ? "1" : "0";
+		}
+		return inversedStr;
 	}
 
-	static empty(size : number) : BitSet {
-		return BitSet.fromNum(0, size);
+	static getSafeStr(signed : boolean, num : number, size : number) {
+		let safeNum = num > 0 ? num : -num;
+		let safeStr = safeNum.toString(2);
+		if (signed) {
+			while (safeStr.length > size - 1) {
+				safeStr = safeStr.substr(1);
+			}
+			while (safeStr.length < size - 1) {
+				safeStr = "0" + safeStr;	
+			}
+			if (num < 0) {
+				safeStr = BitSet.inverseStr(safeStr);
+			}
+			safeStr = (num < 0 ? "1" : "0") + safeStr;
+		} else {
+			while (safeStr.length > size) {
+				safeStr = safeStr.substr(1);
+			}
+			while (safeStr.length < size) {
+				safeStr = "0" + safeStr;	
+			}
+		}
+		return safeStr;
+	}
+
+	static fromNum(signed : boolean, num : number, size : number) : BitSet {
+		let safeStr = BitSet.getSafeStr(signed, num, size);
+		return BitSet.fromString(signed, safeStr, size);
+	}
+
+	static empty(signed : boolean, size : number) : BitSet {
+		return BitSet.fromNum(signed, 0, size);
 	}
 }

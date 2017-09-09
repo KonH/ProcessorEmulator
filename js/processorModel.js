@@ -11,8 +11,8 @@ var ProcessorModel = (function () {
     ProcessorModel.prototype.reset = function () {
         this.program = null;
         this.command = null;
-        this.registers.fill(new BitSet(Setup.regSize));
-        this.memory = new BitSet(Setup.memorySize);
+        this.registers.fill(new BitSet(true, Setup.regSize));
+        this.memory = new BitSet(false, Setup.memorySize);
         this.onModelChanged();
     };
     ProcessorModel.prototype.getCounterRegIdx = function () {
@@ -51,15 +51,15 @@ var ProcessorModel = (function () {
     ProcessorModel.prototype.getRegisters = function () {
         return this.registers;
     };
-    ProcessorModel.prototype.getMemory = function (address, len) {
-        return this.memory.subset(address.toNum(), len);
+    ProcessorModel.prototype.getMemory = function (signed, address, len) {
+        return this.memory.subset(signed, address.toNum(), len);
     };
     ProcessorModel.prototype.getAllMemory = function () {
         return this.memory;
     };
-    ProcessorModel.prototype.readBusData = function (len) {
+    ProcessorModel.prototype.readBusData = function (signed, len) {
         var counter = this.getCounterRegister();
-        var data = this.program.subset(counter.toNum(), len);
+        var data = this.program.subset(signed, counter.toNum(), len);
         var newCounter = counter.addValue(len);
         Logger.write("processorModel", "readBusData: counter: " + counter.toStringComplex() +
             " => " + newCounter.toStringComplex());
@@ -68,7 +68,7 @@ var ProcessorModel = (function () {
         return data;
     };
     ProcessorModel.prototype.updateCommand = function () {
-        var header = this.readBusData(Setup.headerSize);
+        var header = this.readBusData(false, Setup.headerSize);
         this.command = new Command(header);
         this.onModelChanged();
     };
@@ -87,7 +87,7 @@ var ProcessorModel = (function () {
         this.setRegister(accRegIdx, value);
     };
     ProcessorModel.prototype.setRegister = function (index, value) {
-        Logger.write("processorModel", "setRegister: " + index + ": " + value.toStringComplex());
+        Logger.write("processorModel", "setRegister [" + index + "]: " + value.toStringComplex());
         this.registers[index] = value;
         this.onModelChanged();
     };

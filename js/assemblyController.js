@@ -153,18 +153,14 @@ var AssemblyController = (function () {
             arg.readyValue = this.parseInt(arg.rawValue);
         }
     };
-    AssemblyController.prototype.toProperCodeString = function (value, len) {
-        var str = value.toString(2);
-        while (str.length < len) {
-            str = "0" + str;
-        }
-        return str;
+    AssemblyController.prototype.toProperCodeString = function (signed, value, len) {
+        return BitSet.fromNum(signed, value, len).toString();
     };
     AssemblyController.prototype.convertArgs = function (args) {
         var _this = this;
         var str = "";
         args.forEach(function (arg) {
-            var argValue = _this.toProperCodeString(arg.readyValue, arg.size);
+            var argValue = _this.toProperCodeString(true, arg.readyValue, arg.size);
             argValue += " ";
             str += argValue;
         });
@@ -174,7 +170,7 @@ var AssemblyController = (function () {
         var _this = this;
         var machineCode = "";
         holders.forEach(function (holder) {
-            machineCode += _this.toProperCodeString(holder.getHeader(), Setup.headerSize);
+            machineCode += _this.toProperCodeString(false, holder.getHeader(), Setup.headerSize);
             machineCode += " ";
             machineCode += _this.convertArgs(holder.argHolders);
             machineCode += "\n";

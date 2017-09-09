@@ -31,7 +31,7 @@ var ProcessorController = (function () {
                 cleanText += text.charAt(i);
             }
         }
-        var set = BitSet.fromString(cleanText, cleanText.length);
+        var set = BitSet.fromString(false, cleanText, cleanText.length);
         this.model.setProgram(set);
     };
     ProcessorController.prototype.onProcess = function () {
@@ -41,6 +41,9 @@ var ProcessorController = (function () {
         this.readProgram();
     };
     ProcessorController.prototype.onNext = function () {
+        if (this.model.program == null) {
+            return;
+        }
         Logger.write("processorController", "onNext");
         this.checkTermination();
         if (!this.model.getTerminatedFlag()) {

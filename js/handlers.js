@@ -19,7 +19,7 @@ var ResetHandler = (function (_super) {
         return _this;
     }
     ResetHandler.prototype.exec = function (cmd, model) {
-        model.setCommonRegister(cmd.args[0], BitSet.empty(Setup.regSize));
+        model.setCommonRegister(cmd.args[0], BitSet.empty(true, Setup.regSize));
     };
     return ResetHandler;
 }(HandlerBase));
@@ -66,7 +66,7 @@ var ResetAccHandler = (function (_super) {
         return _this;
     }
     ResetAccHandler.prototype.exec = function (cmd, model) {
-        model.setAccumRegister(BitSet.empty(Setup.regSize));
+        model.setAccumRegister(BitSet.empty(true, Setup.regSize));
     };
     return ResetAccHandler;
 }(HandlerBase));
@@ -169,7 +169,7 @@ var LoadHandler = (function (_super) {
     LoadHandler.prototype.exec = function (cmd, model) {
         var addr = cmd.args[1];
         var len = Setup.regSize;
-        var result = model.getMemory(addr, len);
+        var result = model.getMemory(true, addr, len);
         model.setCommonRegister(cmd.args[0], result);
     };
     return LoadHandler;
@@ -205,7 +205,7 @@ var LoadByRegHandler = (function (_super) {
     LoadByRegHandler.prototype.exec = function (cmd, model) {
         var addr = cmd.args[1];
         var len = Setup.regSize;
-        var result = model.getMemory(addr, len);
+        var result = model.getMemory(true, addr, len);
         model.setCommonRegister(cmd.args[0], result);
     };
     return LoadByRegHandler;
@@ -240,7 +240,7 @@ var AddHandler = (function (_super) {
     AddHandler.prototype.exec = function (cmd, model) {
         var sendValue = model.getCommonRegister(cmd.args[0]);
         var recValue = model.getCommonRegister(cmd.args[1]);
-        var newVal = BitSet.fromNum(sendValue.toNum() + recValue.toNum(), Setup.regSize);
+        var newVal = BitSet.fromNum(true, sendValue.toNum() + recValue.toNum(), Setup.regSize);
         model.setCommonRegister(cmd.args[1], newVal);
     };
     return AddHandler;
@@ -272,7 +272,7 @@ var AddAccHandler = (function (_super) {
         return _this;
     }
     AddAccHandler.prototype.exec = function (cmd, model) {
-        var newVal = BitSet.fromNum(model.getAccumRegister().toNum() +
+        var newVal = BitSet.fromNum(true, model.getAccumRegister().toNum() +
             model.getCommonRegister(cmd.args[0]).toNum(), Setup.regSize);
         model.setAccumRegister(newVal);
     };
@@ -307,7 +307,7 @@ var LoadByAccRegHandler = (function (_super) {
     LoadByAccRegHandler.prototype.exec = function (cmd, model) {
         var addr = model.getAccumRegister();
         var len = Setup.regSize;
-        var result = model.getMemory(addr, len);
+        var result = model.getMemory(true, addr, len);
         model.setCommonRegister(cmd.args[0], result);
     };
     return LoadByAccRegHandler;

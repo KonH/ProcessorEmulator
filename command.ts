@@ -10,7 +10,8 @@ class Command {
 
 	private loadArgsBySize(data : BitSet, count : number, size : number) {
 		for (var i = 0; i < count; i++) {
-			let set = data.subset(i * size, size);
+			let set = data.subset(true, i * size, size);
+			Logger.write("command", "loadArgsBySize: loaded set: " + set.toStringComplex());
 			this.args.push(set);
 		}
 	}
